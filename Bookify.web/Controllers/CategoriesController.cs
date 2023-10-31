@@ -16,5 +16,10 @@ namespace Bookify.web.Controllers
             var categories = dbContext.Categories.ToList();
             return View(categories);
         }
+
+        public IActionResult Create()
+        {           
+            return View();
+        }
     }
 }

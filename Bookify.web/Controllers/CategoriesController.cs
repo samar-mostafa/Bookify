@@ -74,6 +74,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ToggleStatus(int id)
         {
             var cat = dbContext.Categories.Find(id);
@@ -82,8 +83,11 @@ namespace Bookify.web.Controllers
                 return NotFound();
 
             cat.IsDeleted = !cat.IsDeleted;
+            cat.UpdatedOn = DateTime.Now;
 
-            return Ok();
+            dbContext.SaveChanges();
+
+            return Ok(cat.UpdatedOn.ToString());
         }
     }
 }

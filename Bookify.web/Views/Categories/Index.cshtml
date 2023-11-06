@@ -129,20 +129,42 @@
             $('.js-toggle-status').on('click', function () {
                 var btn = $(this);
                 var btnStatusId = btn.data('id');
-                console.log(btnStatusId);
-
-                $.post({
-                    url: `/Categories/ToggleStatus/${btnStatusId}`,
-                    data:{
-                        '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                bootbox.confirm({
+                    message: 'are you sure to change the category status?',
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-secondary'
+                        }
                     },
-                    success: function (updatedOn) {
-                        var status = btn.parents('tr').find('.js-status');
-                        var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
-                        status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
-                        btn.parents('tr').find('.js-updated-on').html(updatedOn)
+                    callback: function (result) {
+                        if(result)
+                            $.post({
+                                url: `/Categories/ToggleStatus/${btnStatusId}`,
+                                data: {
+                                    '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                                },
+                                success: function (updatedOn) {
+                                    var row = btn.parents('tr');
+                                    var status = row.find('.js-status');
+                                    var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
+                                    status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
+                                    row.find('.js-updated-on').html(updatedOn)
+                                    showSuccessMessage("status changed successfully");
+                                    row.addClass("animate__animated animate__headShake");
+                                },
+                                error:function(){
+                                    showErrorMessage()
+                                }
+                            })
                     }
-                })
+                });
+
+               
             })
 
 

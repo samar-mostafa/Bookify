@@ -1,6 +1,7 @@
 ﻿
 
 using Bookify.web.Core.Models;
+using Bookify.web.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,25 +21,27 @@ namespace Bookify.web.Controllers
             return View(categories);
         }
 
+        [AjaxOnly]
         public IActionResult Create()
         {           
-            return View("Form");
+            return PartialView("_Form");
         }
 
         [HttpPost]
         public IActionResult Create(CategoryFormViewModel model)
         {
-            if(!ModelState.IsValid)
-                return View(model);
+            if (!ModelState.IsValid)
+                return BadRequest();
 
             var cat = new Category { Name = model.Name };
             dbContext.Add(cat);
             dbContext.SaveChanges();
-            TempData["Message"] = "Added successfully";
+            //TempData["Message"] = "Added successfully";
 
-            return RedirectToAction(nameof(Index));
+            return PartialView("_CategoryRow", cat);
         }
 
+        [AjaxOnly]
         public IActionResult Edit(int id)
         {
             var category = dbContext.Categories.Find(id);
@@ -51,7 +54,7 @@ namespace Bookify.web.Controllers
                 Id = category.Id,
                 Name = category.Name
             };
-            return View("Form" ,catVM);
+            return PartialView("_Form" ,catVM);
         }
 
         [HttpPost]
@@ -59,7 +62,7 @@ namespace Bookify.web.Controllers
         public IActionResult Edit(CategoryFormViewModel model)
         {
             if (!ModelState.IsValid)
-                return View("Form", model);
+                return NotFound();
 
             var category = dbContext.Categories.Find(model.Id);
 
@@ -70,8 +73,8 @@ namespace Bookify.web.Controllers
             category.UpdatedOn = DateTime.Now;
             dbContext.SaveChanges();
 
-            TempData["Message"] = "Edited successfully";
-            return RedirectToAction(nameof(Index));
+          
+            return PartialView("_CategoryRow",category);
 
         }
 

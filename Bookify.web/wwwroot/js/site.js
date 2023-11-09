@@ -142,7 +142,10 @@ var KTDatatables = function () {
     };
 }();
 $(document).ready(function () {
-
+    //datatable
+    KTUtil.onDOMContentLoaded(function () {
+        KTDatatables.init();
+    });
     //show edit and add success message
     var message = $('#message').text();
     if (message !== '') {
@@ -172,6 +175,48 @@ $(document).ready(function () {
         window.$('#Model').modal('show');
        // mod.model('show');
        
+    })
+
+    //handel toggle status
+    $('body').delegate('.js-toggle-status', 'click', function () {
+        var btn = $(this);
+        var btnStatusId = btn.data('id');
+        bootbox.confirm({
+            message: 'are you sure to change the category status?',
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-danger'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-secondary'
+                }
+            },
+            callback: function (result) {
+                if (result)
+                    $.post({
+                        url: btn.data('url'),
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function (updatedOn) {
+                            var row = btn.parents('tr');
+                            var status = row.find('.js-status');
+                            var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
+                            status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
+                            row.find('.js-updated-on').html(updatedOn)
+                            showSuccessMessage("status changed successfully");
+                            row.addClass("animate__animated animate__headShake");
+                        },
+                        error: function () {
+                            showErrorMessage()
+                        }
+                    })
+            }
+        });
+
+
     })
 
 })

@@ -1,5 +1,6 @@
 ﻿
 
+using AutoMapper;
 using Bookify.web.Core.Models;
 using Bookify.web.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,19 @@ namespace Bookify.web.Controllers
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext dbContext;
+        private readonly IMapper _mapper;
 
-        public CategoriesController(ApplicationDbContext dbContext)
+        public CategoriesController(ApplicationDbContext dbContext,IMapper mapper)
         {
             this.dbContext = dbContext;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
             var categories = dbContext.Categories.AsNoTracking().ToList();
-            return View(categories);
+            var viewModel = _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
+           
+            return View(viewModel);
         }
 
         [AjaxOnly]
@@ -33,12 +38,12 @@ namespace Bookify.web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var cat = new Category { Name = model.Name };
+            var cat = _mapper.Map<Category>(model);
             dbContext.Add(cat);
             dbContext.SaveChanges();
             //TempData["Message"] = "Added successfully";
-
-            return PartialView("_CategoryRow", cat);
+            var viewModel = _mapper.Map<CategoryViewModel>(cat);
+            return PartialView("_CategoryRow", viewModel);
         }
 
         [AjaxOnly]
@@ -49,11 +54,7 @@ namespace Bookify.web.Controllers
             if (category is null)
                 return NotFound();
 
-            var catVM = new CategoryFormViewModel
-            {
-                Id = category.Id,
-                Name = category.Name
-            };
+            var catVM =_mapper.Map<CategoryFormViewModel>(category);
             return PartialView("_Form" ,catVM);
         }
 
@@ -69,12 +70,13 @@ namespace Bookify.web.Controllers
             if (category is null)
                 return NotFound();
 
-            category.Name=model.Name;
+            category = _mapper.Map(model, category);
             category.UpdatedOn = DateTime.Now;
             dbContext.SaveChanges();
+            var viewModel = _mapper.Map<CategoryViewModel>(category);
 
-          
-            return PartialView("_CategoryRow",category);
+
+            return PartialView("_CategoryRow",viewModel);
 
         }
 

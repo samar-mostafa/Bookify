@@ -13,6 +13,7 @@ namespace Bookify.web.Data
 
 
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Author> Authors { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
            // builder.Entity<Category>().Property(c => c.CreatedOn).HasDefaultValueSql("GETDATE()");

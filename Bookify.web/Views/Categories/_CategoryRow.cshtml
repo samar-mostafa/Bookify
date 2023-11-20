@@ -1,4 +1,4 @@
-﻿@model CategoryViewModel
+﻿@model AuthorOrCategoryViewModel
     <tr>
         <td>@Model.Name</td>
         <td>
@@ -6,7 +6,7 @@
                 @(Model.IsDeleted == false ? "Available" : "Deleted")
             </span>
         </td>
-        <td>@Model.CreatedOn</td>
+        <td>@Model.CreatedOn</td>  
         <td class="js-updated-on">@Model.UpdatedOn</td>
         <td>
 

@@ -30,6 +30,10 @@ function showErrorMessage(message = 'something went wrong') {
 }
 
 //model
+function onModelBegin() {
+    debugger
+    $('.js-loading').attr("disabled", "disabled").attr('data-kt-indicator','on');
+}
 function onModelSuccess(row) {
 
     showSuccessMessage();
@@ -43,6 +47,9 @@ function onModelSuccess(row) {
 
     KTMenu.init();
     KTMenu.initHandlers();
+}
+function onModelComplete() {
+    $('body:submit').removeAttr('disabled');
 }
 
 //datatables
@@ -61,7 +68,6 @@ var KTDatatables = function () {
         // Init datatable --- more info on datatables: https://datatables.net/manual/
         datatable = $(table).DataTable({
             "info": false,
-            'order': [],
             'pageLength': 10,
         });
     }

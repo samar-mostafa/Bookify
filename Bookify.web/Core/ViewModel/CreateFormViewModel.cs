@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace Bookify.web.Core.ViewModel
+﻿namespace Bookify.web.Core.ViewModel
 {
     public class CreateFormViewModel
     {
         public int Id { get; set; }
-        [Required(ErrorMessage ="enter name")]
-        [MaxLength(50, ErrorMessage = "name should be less than 50 chr.")]
-        [Remote("AllowItem",null,ErrorMessage ="this name is allready exist")]
+
+        [Required(ErrorMessage = "enter name")]
+        [MaxLength(50, ErrorMessage = Errors.MaxLength)]
+        [Remote("AllowItem", null, ErrorMessage = Errors.Dublicated)]
         public string Name { get; set; } = null!;
     }
 }

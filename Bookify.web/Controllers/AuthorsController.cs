@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
-namespace Bookify.web.Controllers
+﻿namespace Bookify.web.Controllers
 {
     public class AuthorsController : Controller
     {
         private readonly ApplicationDbContext db;
         private readonly IMapper mapper;
 
-        public AuthorsController(ApplicationDbContext _db,IMapper mapper)
+        public AuthorsController(ApplicationDbContext _db, IMapper mapper)
         {
             db = _db;
             this.mapper = mapper;
@@ -16,7 +13,7 @@ namespace Bookify.web.Controllers
         public IActionResult Index()
         {
             var authors = db.Authors.AsNoTracking().ToList();
-            var viewModel =mapper.Map<IEnumerable<AuthorOrCategoryViewModel>>(authors);
+            var viewModel = mapper.Map<IEnumerable<AuthorOrCategoryViewModel>>(authors);
             return View(viewModel);
         }
 
@@ -35,12 +32,12 @@ namespace Bookify.web.Controllers
             db.Add(author);
             db.SaveChanges();
             var viewModel = mapper.Map<AuthorOrCategoryViewModel>(author);
-           return PartialView("_AuthorRow",viewModel);   
+            return PartialView("_AuthorRow", viewModel);
         }
 
         public IActionResult AllowItem(CreateFormViewModel model)
         {
-            var auth = db.Authors.SingleOrDefault(a=>a.Name == model.Name);
+            var auth = db.Authors.SingleOrDefault(a => a.Name == model.Name);
             var isAllow = auth == null || auth.Id.Equals(model.Id);
             return Json(isAllow);
         }
@@ -50,10 +47,10 @@ namespace Bookify.web.Controllers
         {
             var auth = db.Authors.Find(id);
 
-            if(auth == null) 
+            if (auth == null)
                 return NotFound();
             var viewModel = mapper.Map<CreateFormViewModel>(auth);
-            return PartialView("_Form",viewModel);
+            return PartialView("_Form", viewModel);
         }
 
         [HttpPost]
@@ -67,8 +64,8 @@ namespace Bookify.web.Controllers
             if (author == null)
                 return NotFound();
 
-            author= mapper.Map(model,author);
-            author.LastUpdatedOn=DateTime.Now;
+            author = mapper.Map(model, author);
+            author.UpdatedOn = DateTime.Now;
             db.SaveChanges();
 
             var viewModel = mapper.Map<AuthorOrCategoryViewModel>(author);
@@ -85,11 +82,11 @@ namespace Bookify.web.Controllers
                 return NotFound();
 
             cat.IsDeleted = !cat.IsDeleted;
-            cat.LastUpdatedOn = DateTime.Now;
+            cat.UpdatedOn = DateTime.Now;
 
             db.SaveChanges();
 
-            return Ok(cat.LastUpdatedOn.ToString());
+            return Ok(cat.UpdatedOn.ToString());
         }
     }
 }

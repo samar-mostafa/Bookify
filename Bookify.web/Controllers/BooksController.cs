@@ -31,13 +31,14 @@ namespace Bookify.web.Controllers
 
         public IActionResult Edit(int id)
         {
-            var book = context.Books.Find(id);
+            var book = context.Books.Include(b=>b.categories)
+                .SingleOrDefault(b=>b.Id==id);
             if (book is null)
                 return NotFound();
-            var viewModel = mapper.Map<BookFormViewModel>(book);
-
-
-            return View("Create",PopulateModel(viewModel));
+            var model = mapper.Map<BookFormViewModel>(book);
+            var viewModel = PopulateModel(model);
+            viewModel.SelectedCategories = book.categories.Select(b => b.CategoryId).ToList();
+            return View("Create",viewModel);
         }
 
         [HttpPost]

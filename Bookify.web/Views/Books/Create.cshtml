@@ -2,7 +2,7 @@
 
 @{
 
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Books";
 }
 <div class="alert bg-light-primary border border-primary border-3 border-dashed d-flex justify-content-between  w-100 p-5 mb-10">
     <div class="d-flex align-items-center">
@@ -50,7 +50,7 @@
                     </select>
                     <label asp-for="SelectedCategories"></label>
                 </div>
-                <span asp-validation-for="AuthorId" class="text-danger"></span>
+                <span asp-validation-for="SelectedCategories" class="text-danger"></span>
             </div>
 
             <div class="row mb-5">
@@ -69,8 +69,13 @@
                 <span asp-validation-for="PublishingDate" class="text-danger"></span>
             </div>
             <div class="row mb-5">
+                <div>
+                    <img id="imagePreview" width="200px" height="200px" src="~/images/books/@(Model.ImageUrl is null ?"noCover.gif":Model.ImageUrl)" alt="book with no image" />
+                </div>
                 <div class="form-floating col-md-8">
-                    <input type="file" class="form-control" placeholder="" asp-for="Image" />
+                    <input type="file" class="form-control" placeholder=""
+                    asp-for="Image" accept=".jpg ,.ipeg ,.png"
+                           onchange="document.getElementById('imagePreview').src=window.URL.createObjectURL(this.files[0])  " />
                     <label asp-for="Image"></label>
                 </div>
                 <span asp-validation-for="Image" class="text-danger"></span>

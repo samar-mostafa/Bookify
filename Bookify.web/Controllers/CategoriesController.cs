@@ -1,15 +1,11 @@
-﻿
-
-
-
-namespace Bookify.web.Controllers
+﻿namespace Bookify.web.Controllers
 {
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext dbContext;
         private readonly IMapper _mapper;
 
-        public CategoriesController(ApplicationDbContext dbContext,IMapper mapper)
+        public CategoriesController(ApplicationDbContext dbContext, IMapper mapper)
         {
             this.dbContext = dbContext;
             _mapper = mapper;
@@ -17,19 +13,19 @@ namespace Bookify.web.Controllers
         public IActionResult Index()
         {
             var categories = dbContext.Categories.AsNoTracking().ToList();
-            var viewModel = _mapper.Map<IEnumerable<CategoryViewModel>>(categories);
-           
+            var viewModel = _mapper.Map<IEnumerable<AuthorOrCategoryViewModel>>(categories);
+
             return View(viewModel);
         }
 
         [AjaxOnly]
         public IActionResult Create()
-        {           
+        {
             return PartialView("_Form");
         }
 
         [HttpPost]
-        public IActionResult Create(CategoryFormViewModel model)
+        public IActionResult Create(CreateFormViewModel model)
         {
             if (!ModelState.IsValid)
                 return BadRequest();
@@ -38,7 +34,7 @@ namespace Bookify.web.Controllers
             dbContext.Add(cat);
             dbContext.SaveChanges();
             //TempData["Message"] = "Added successfully";
-            var viewModel = _mapper.Map<CategoryViewModel>(cat);
+            var viewModel = _mapper.Map<AuthorOrCategoryViewModel>(cat);
             return PartialView("_CategoryRow", viewModel);
         }
 
@@ -50,13 +46,13 @@ namespace Bookify.web.Controllers
             if (category is null)
                 return NotFound();
 
-            var catVM =_mapper.Map<CategoryFormViewModel>(category);
-            return PartialView("_Form" ,catVM);
+            var catVM = _mapper.Map<CreateFormViewModel>(category);
+            return PartialView("_Form", catVM);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(CategoryFormViewModel model)
+        public IActionResult Edit(CreateFormViewModel model)
         {
             if (!ModelState.IsValid)
                 return NotFound();
@@ -69,10 +65,10 @@ namespace Bookify.web.Controllers
             category = _mapper.Map(model, category);
             category.UpdatedOn = DateTime.Now;
             dbContext.SaveChanges();
-            var viewModel = _mapper.Map<CategoryViewModel>(category);
+            var viewModel = _mapper.Map<AuthorOrCategoryViewModel>(category);
 
 
-            return PartialView("_CategoryRow",viewModel);
+            return PartialView("_CategoryRow", viewModel);
 
         }
 
@@ -93,9 +89,9 @@ namespace Bookify.web.Controllers
             return Ok(cat.UpdatedOn.ToString());
         }
 
-        public IActionResult AllowItem(CategoryFormViewModel model)
+        public IActionResult AllowItem(CreateFormViewModel model)
         {
-            var category=dbContext.Categories.SingleOrDefault(c=>c.Name==model.Name);
+            var category = dbContext.Categories.SingleOrDefault(c => c.Name == model.Name);
             var isAllowed = category is null || category.Id.Equals(model.Id);
             return Json(isAllowed);
         }

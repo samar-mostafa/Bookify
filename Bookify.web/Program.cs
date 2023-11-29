@@ -1,7 +1,5 @@
 using Bookify.web.Core.Mapping;
-using Bookify.web.Data;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);

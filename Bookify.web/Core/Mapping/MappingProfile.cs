@@ -1,14 +1,27 @@
-﻿using AutoMapper;
-using Bookify.web.Core.Models;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Bookify.web.Core.Mapping
 {
-    public class MappingProfile:Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
-            CreateMap<Category,CategoryViewModel>();
-            CreateMap<CategoryFormViewModel, Category>().ReverseMap();
+            //Catgeories
+            CreateMap<Category, AuthorOrCategoryViewModel>();
+            CreateMap<CreateFormViewModel, Category>().ReverseMap();
+            CreateMap<Category, SelectListItem>().
+                ForMember(dest => dest.Value, op => op.MapFrom(src => src.Id)).
+                ForMember(dest => dest.Text, op => op.MapFrom(src => src.Name));
+
+            //Authors
+            CreateMap<Author, AuthorOrCategoryViewModel>();
+            CreateMap<CreateFormViewModel, Author>().ReverseMap();
+            CreateMap<Author,SelectListItem>()
+                .ForMember(dest => dest.Value,op =>op.MapFrom(src=>src.Id))
+                .ForMember(dest =>dest.Text,op =>op.MapFrom(src=>src.Name));
+
+            //books
+            CreateMap<BookFormViewModel, Book>();
         }
     }
 }

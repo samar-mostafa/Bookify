@@ -46,7 +46,7 @@ function onModelSuccess(row) {
     datatable.row.add(newRow).draw();
 
     KTMenu.init();
-    KTMenu.initHandlers();
+    KTMenu.initGlobalHandlers();
 }
 function onModelComplete() {
     $('body:submit').removeAttr('disabled');

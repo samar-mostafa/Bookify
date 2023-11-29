@@ -1,10 +1,6 @@
 ﻿
 
-using AutoMapper;
-using Bookify.web.Core.Models;
-using Bookify.web.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace Bookify.web.Controllers
 {

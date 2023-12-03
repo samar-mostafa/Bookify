@@ -148,6 +148,11 @@ var KTDatatables = function () {
     };
 }();
 $(document).ready(function () {
+    //select2
+    $('.js-select2').select2();
+
+
+
     //datatable
     KTUtil.onDOMContentLoaded(function () {
         KTDatatables.init();

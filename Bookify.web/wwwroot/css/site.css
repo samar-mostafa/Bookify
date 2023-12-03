@@ -18,8 +18,13 @@ body {
 }
 
 /*override theme*/
-.form-floating > .form-select {
-    padding-top: 2.15rem;
-    padding-bottom: 0.425rem;
+
+
+.image-input-placeholder {
+    background-image: url('../Images/imgPlaceHolder.jpg');
+}
+
+[data-bs-theme="dark"] .image-input-placeholder {
+    background-image: url('../Images/imgPlaceHolder.jpg');
 }
 /*end theme*/

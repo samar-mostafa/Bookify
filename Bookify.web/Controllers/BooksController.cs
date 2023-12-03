@@ -82,6 +82,65 @@ namespace Bookify.web.Controllers
 
         }
 
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(BookFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(PopulateModel(model));
+
+            var book = context.Books.Find(model.Id);
+
+            if (book is null)
+                return NotFound();
+
+           
+
+            if (model.Image is not null)
+            {
+                if (!string.IsNullOrEmpty(book.ImageUrl))
+                {
+                    var oldImagePath = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", book.ImageUrl);
+                    if(System.IO.File.Exists(oldImagePath))
+                        System.IO.File.Delete(oldImagePath);
+                }
+
+
+                var extension = Path.GetExtension(model.Image.FileName);
+                if (!_allowedImageExtensions.Contains(extension))
+                {
+                    ModelState.AddModelError(nameof(model.Image), Errors.AllowedImageExtensions);
+                    return View(PopulateModel(model));
+                }
+                if (_allowedImageSize < model.Image.Length)
+                {
+                    ModelState.AddModelError(nameof(model.Image), Errors.AllowedImageSize);
+                    return View(PopulateModel(model));
+                }
+
+                var imageName = $"{new Guid()}{extension}";
+                var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
+                using var stream = System.IO.File.Create(path);
+                model.Image.CopyTo(stream);
+
+                model.ImageUrl = imageName;
+
+            }
+            else if(model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
+                model.ImageUrl = book.ImageUrl;
+
+             book =mapper.Map(model,book);
+            book.UpdatedOn=DateTime.Now;
+            foreach (var cat in model.SelectedCategories)
+                book.categories.Add(new BookCategory { CategoryId = cat });
+          
+            context.SaveChanges();
+            return RedirectToAction("Index");
+
+        }
+
+
         private BookFormViewModel PopulateModel(BookFormViewModel? model = null)
         {
             var viewModel = model is null ? new BookFormViewModel() : model;

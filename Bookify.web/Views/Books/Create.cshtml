@@ -24,7 +24,39 @@
 <div class="card">
 
     <div class="card-body">
-        <form asp-controller="Books" method="post" enctype="multipart/form-data">
+        <form asp-controller="Books" method="post" enctype="multipart/form-data">          
+                <!--begin::Image input-->
+                <div class="image-input image-input-empty  mb-10" data-kt-image-input="true">
+                    <!--begin::Image preview wrapper-->
+                <div class="image-input-wrapper image-input-placeholder w-125px h-125px "></div>
+                    <!--end::Image preview wrapper-->
+                    <!--begin::Edit button-->
+                    <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                           data-kt-image-input-action="change"
+                          
+                           data-bs-dismiss="click"
+                          >
+                    <i class="fa-solid fa-pen"><span class="path1"></span><span class="path2"></span></i>
+
+                        <!--begin::Inputs-->
+                        <input   type="file" asp-for="Image" accept=".png, .jpg, .jpeg" />
+                        <input type="hidden" asp-for="Image" />
+                        <!--end::Inputs-->
+                    </label>
+                    <!--end::Edit button-->
+                    <!--begin::Cancel button-->
+                    <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                          data-kt-image-input-action="cancel"
+                       
+                          data-bs-dismiss="click">
+                    <i class="fa-solid fa-xmark"></i>
+                       @* <i class="ki-outline ki-cross fs-3"></i>*@
+                    </span>
+                    <!--end::Cancel button-->
+       
+                </div>
+                <!--end::Image input-->
+            
             <div class="row mb-5">
                 <div class="form-floating col-md-8">
                     <input type="text" class="form-control" placeholder="" asp-for="Title" />
@@ -35,20 +67,24 @@
 
             <div class="row mb-5 ">
                 <div class="form-floating col-md-8">
-                    <select class="form-select" placeholder="" asp-for="AuthorId" asp-items="@Model.Authors">
-                        <option value="">Select Author</option>
+                    <select class="form-select js-select2" data-placeholder="Select Author" 
+                    asp-for="AuthorId"
+                    asp-items="@Model.Authors">
+                        <option selected value="">Select Author</option>
                     </select>
-                    <label asp-for="AuthorId"></label>
+                   
                 </div>
                 <span asp-validation-for="AuthorId" class="text-danger"></span>
             </div>
 
             <div class="row mb-5">
                 <div class="form-floating col-md-8">
-                    <select class="form-select" multiple placeholder="" asp-for="SelectedCategories" asp-items="@Model.Categories">
-                        <option value="">Select Categories</option>
+                    <select class="form-select js-select2" multiple data-placeholder="Select Categories"
+                    asp-for="SelectedCategories" 
+                    asp-items="@Model.Categories">
+                       
                     </select>
-                    <label asp-for="SelectedCategories"></label>
+                   
                 </div>
                 <span asp-validation-for="SelectedCategories" class="text-danger"></span>
             </div>
@@ -68,7 +104,7 @@
                 </div>
                 <span asp-validation-for="PublishingDate" class="text-danger"></span>
             </div>
-            <div class="row mb-5">
+           @* <div class="row mb-5">
                 <div>
                     <img id="imagePreview" width="200px" height="200px" src="~/images/books/@(Model.ImageUrl is null ?"noCover.gif":Model.ImageUrl)" alt="book with no image" />
                 </div>
@@ -79,7 +115,7 @@
                     <label asp-for="Image"></label>
                 </div>
                 <span asp-validation-for="Image" class="text-danger"></span>
-            </div>
+            </div>*@
 
             <div class="row mb-5">
                 <div class="form-floating col-md-8">

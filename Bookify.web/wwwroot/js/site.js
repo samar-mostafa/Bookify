@@ -148,6 +148,15 @@ var KTDatatables = function () {
     };
 }();
 $(document).ready(function () {
+    //Tiny
+    var options = { selector: ".js_tiny", height: "422" };
+
+    if (KTThemeMode.getMode() === "dark") {
+        options["skin"] = "oxide-dark";
+        options["content_css"] = "dark";
+    }
+
+    tinymce.init(options);
     //select2
     $('.js-select2').select2();
 

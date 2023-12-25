@@ -148,6 +148,14 @@ var KTDatatables = function () {
     };
 }();
 $(document).ready(function () {
+    //datepicker
+    $('.js_datepicker').daterangepicker({
+        singleDatePicker: true,
+       /* maxDate: new Date(),*/
+        drops: 'auto',
+        autoApply:true
+
+    })
     //Tiny
     var options = { selector: ".js_tiny", height: "422" };
 

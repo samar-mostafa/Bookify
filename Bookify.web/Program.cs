@@ -1,4 +1,5 @@
 using Bookify.web.Core.Mapping;
+using Bookify.web.Core.Settings;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
@@ -16,6 +17,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 builder.Services.AddExpressiveAnnotations();
+builder.Services.Configure<CloudinarySettings>(builder.Configuration.
+    GetSection(nameof(CloudinarySettings)));
 
 var app = builder.Build();
 

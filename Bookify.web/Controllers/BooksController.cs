@@ -43,7 +43,7 @@ namespace Bookify.web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(BookFormViewModel model)
+        public async Task<IActionResult> Create(BookFormViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(PopulateModel(model));
@@ -67,7 +67,7 @@ namespace Bookify.web.Controllers
                 var imageName = $"{new Guid()}{extension}";
                 var path =Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName); 
                 using var stream = System.IO.File.Create(path);
-                model.Image.CopyTo(stream);
+                await model.Image.CopyToAsync(stream);
 
                 book.ImageUrl = imageName;
                     
@@ -85,7 +85,7 @@ namespace Bookify.web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(BookFormViewModel model)
+        public async Task<IActionResult> Edit(BookFormViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(PopulateModel(model));
@@ -122,7 +122,7 @@ namespace Bookify.web.Controllers
                 var imageName = $"{new Guid()}{extension}";
                 var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
                 using var stream = System.IO.File.Create(path);
-                model.Image.CopyTo(stream);
+                await model.Image.CopyToAsync(stream);
 
                 model.ImageUrl = imageName;
 

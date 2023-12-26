@@ -1,7 +1,11 @@
 ﻿using Bookify.web.Core.Models;
+using Bookify.web.Core.Settings;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 
 namespace Bookify.web.Controllers
 {
@@ -12,9 +16,18 @@ namespace Bookify.web.Controllers
         private readonly IWebHostEnvironment webHostEnvironment;
         private List<string> _allowedImageExtensions =new() { ".jpg", ".jpeg", ".png" };
         private int _allowedImageSize = 2097152;
+        private readonly Cloudinary _cloudinary;
         public BooksController(ApplicationDbContext context, IMapper mapper,
-            IWebHostEnvironment webHostEnvironment)
+            IWebHostEnvironment webHostEnvironment,
+            IOptions<CloudinarySettings> cloudinary)
         {
+            var account = new Account
+            {
+                ApiSecret = cloudinary.Value.APISecret,
+                ApiKey = cloudinary.Value.APIKey,
+                Cloud = cloudinary.Value.CloudName
+            };
+            _cloudinary = new Cloudinary(account);
             this.context = context;
             this.mapper = mapper;
             this.webHostEnvironment = webHostEnvironment;
@@ -65,11 +78,20 @@ namespace Bookify.web.Controllers
                 }
 
                 var imageName = $"{new Guid()}{extension}";
-                var path =Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName); 
-                using var stream = System.IO.File.Create(path);
-                await model.Image.CopyToAsync(stream);
+                //var path =Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName); 
+                //using var stream = System.IO.File.Create(path);
+                //await model.Image.CopyToAsync(stream);
 
-                book.ImageUrl = imageName;
+                //book.ImageUrl = imageName;
+
+                using var stream = model.Image.OpenReadStream() ;
+                var imgParams = new ImageUploadParams
+                {
+                    File = new FileDescription(imageName, stream)
+                };
+
+                var result = await _cloudinary.UploadAsync(imgParams);
+                book.ImageUrl = result.SecureUrl.ToString();
                     
             }
             foreach (var cat in model.SelectedCategories)

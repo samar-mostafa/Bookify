@@ -1,6 +1,13 @@
 ﻿@model BookFormViewModel
 
 @{
+    <style>
+        //.img {
+        //      background-image: url('/Images/imgPlaceHolder.jpg');
+        //  }
+
+         
+    </style>
 
     ViewData["Title"] = "Books";
 }
@@ -22,41 +29,50 @@
     <!--end::Close-->
 </div>
 <div class="card">
-
+  
     <div class="card-body">
-        <form asp-controller="Books" method="post" enctype="multipart/form-data">          
-                <!--begin::Image input-->
-                <div class="image-input image-input-empty  mb-10" data-kt-image-input="true">
-                    <!--begin::Image preview wrapper-->
-                <div class="image-input-wrapper image-input-placeholder w-125px h-125px "></div>
-                    <!--end::Image preview wrapper-->
-                    <!--begin::Edit button-->
-                    <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary 
-w-25px h-25px bg-body shadow"
-                           data-kt-image-input-action="change"
-                          
-                           data-bs-dismiss="click"
-                          >
-                    <i class="fa-solid fa-pen"><span class="path1"></span><span class="path2"></span></i>
+        <form asp-controller="Books" method="post" enctype="multipart/form-data">
+            <!--begin::Image input-->
+         
+            <div class="image-input img image-input-outline mb-10" data-kt-image-input="true"
+                 style="background-image:url(/Images/@(string.IsNullOrEmpty(Model.ImageUrl) ? "no-image-icon-23485.png" : $"Books/{Model.ImageUrl}")) !important">
+                <!--begin::Image preview wrapper-->
+                <div class="image-input-wrapper w-125px h-200px" ></div>
+                <!--end::Image preview wrapper-->
+                <!--begin::Edit button-->
+                <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                       data-kt-image-input-action="change"
+                    
+                       data-bs-dismiss="click">
+                     
+                    <i class="bi bi-pencil-fill fs-7"></i>
 
-                        <!--begin::Inputs-->
-                        <input   type="file" asp-for="Image" accept=".png, .jpg, .jpeg" />
-                        <input type="hidden" asp-for="Image" />
-                        <!--end::Inputs-->
-                    </label>
-                    <!--end::Edit button-->
-                    <!--begin::Cancel button-->
-                    <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
-                          data-kt-image-input-action="cancel"
-                       
-                          data-bs-dismiss="click">
-                    <i class="fa-solid fa-xmark"></i>
-                       @* <i class="ki-outline ki-cross fs-3"></i>*@
-                    </span>
-                    <!--end::Cancel button-->
-       
-                </div>
-                <!--end::Image input-->
+                    <!--begin::Inputs-->
+                    <input type="file" name="avatar" accept=".png, .jpg, .jpeg" />
+                    <input type="hidden" name="avatar_remove" />
+                    <!--end::Inputs-->
+                </label>
+                <!--end::Edit button-->
+                <!--begin::Cancel button-->
+                <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="cancel"
+                    
+                      data-bs-dismiss="click">
+                    
+                    <i class="bi bi-x fs-7"></i>
+                </span>
+                <!--end::Cancel button-->
+                <!--begin::Remove button-->
+                <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                      data-kt-image-input-action="remove"
+                     
+                      data-bs-dismiss="click">
+                     
+                    <i class="bi bi-x fs-7"></i>
+                </span>
+                <!--end::Remove button-->
+            </div>
+            <!--end::Image input-->
             
            <div class="row">
                <div class="col-md-5">

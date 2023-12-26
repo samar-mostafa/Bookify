@@ -151,5 +151,13 @@ namespace Bookify.web.Controllers
             return viewModel;
 
         }
+
+        public IActionResult AllowItem(BookFormViewModel model)
+        {
+            var book = context.Books.SingleOrDefault(b=>b.Title==model.Title && b.AuthorId ==model.AuthorId);
+            var isAllow = book == null || book.Id.Equals(model.Id);
+            return Json(isAllow);
+        }
+
     }
 }

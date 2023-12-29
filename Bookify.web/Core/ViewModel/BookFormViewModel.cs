@@ -12,7 +12,7 @@ namespace Bookify.web.Core.ViewModel
         public string Title { get; set; } = null!;
 
         [Display(Name ="Author")]
-        [Remote("AllowItem", null, AdditionalFields = "Id,AuthorId", ErrorMessage = Errors.DublicatedBook)]
+        [Remote("AllowItem", null, AdditionalFields = "Id,Title", ErrorMessage = Errors.DublicatedBook)]
         public int AuthorId { get; set; }
 
         public IEnumerable<SelectListItem>? Authors { get; set; }

@@ -18,6 +18,8 @@
 
         public string Description { get; set; } = null!;
 
+        public string? ImageThumbnailUrl { get; set; }
+        public string? ImagePublicId { get; set; }
         public ICollection<BookCategory> categories { get; set; }=new List<BookCategory>();
     }
 }

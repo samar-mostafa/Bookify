@@ -87,11 +87,14 @@ namespace Bookify.web.Controllers
                 using var stream = model.Image.OpenReadStream() ;
                 var imgParams = new ImageUploadParams
                 {
-                    File = new FileDescription(imageName, stream)
+                    File = new FileDescription(imageName, stream),
+                    UseFilename = true
                 };
 
                 var result = await _cloudinary.UploadAsync(imgParams);
                 book.ImageUrl = result.SecureUrl.ToString();
+                book.ImageThumbnailUrl = getImageThumbnailUrl(book.ImageUrl);
+                book.ImagePublicId = result.PublicId;
                     
             }
             foreach (var cat in model.SelectedCategories)
@@ -109,6 +112,7 @@ namespace Bookify.web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(BookFormViewModel model)
         {
+            var imgPublicId = "";
             if (!ModelState.IsValid)
                 return View(PopulateModel(model));
 
@@ -123,9 +127,11 @@ namespace Bookify.web.Controllers
             {
                 if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
-                    var oldImagePath = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", book.ImageUrl);
-                    if(System.IO.File.Exists(oldImagePath))
-                        System.IO.File.Delete(oldImagePath);
+                    //var oldImagePath = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", book.ImageUrl);
+                    //if(System.IO.File.Exists(oldImagePath))
+                    //    System.IO.File.Delete(oldImagePath);
+
+                    await _cloudinary.DeleteResourcesAsync(book.ImagePublicId); 
                 }
 
 
@@ -142,17 +148,26 @@ namespace Bookify.web.Controllers
                 }
 
                 var imageName = $"{new Guid()}{extension}";
-                var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
-                using var stream = System.IO.File.Create(path);
-                await model.Image.CopyToAsync(stream);
-
-                model.ImageUrl = imageName;
-
+                //var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
+                //using var stream = System.IO.File.Create(path);
+                //await model.Image.CopyToAsync(stream);
+                // model.ImageUrl = imageName;
+                using var stream = model.Image.OpenReadStream();
+                var imageParams = new ImageUploadParams
+                {
+                    File = new FileDescription(imageName, stream),
+                    UseFilename = true
+                };
+                var result = await _cloudinary.UploadAsync(imageParams);
+                model.ImageUrl = result.SecureUri.ToString();
+                imgPublicId=result.PublicId;
             }
             else if(model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
                 model.ImageUrl = book.ImageUrl;
 
              book =mapper.Map(model,book);
+            book.ImageThumbnailUrl = getImageThumbnailUrl(book.ImageUrl);
+            book.ImagePublicId = imgPublicId;
             book.UpdatedOn=DateTime.Now;
             foreach (var cat in model.SelectedCategories)
                 book.categories.Add(new BookCategory { CategoryId = cat });
@@ -179,6 +194,17 @@ namespace Bookify.web.Controllers
             var book = context.Books.SingleOrDefault(b=>b.Title==model.Title && b.AuthorId ==model.AuthorId);
             var isAllow = book == null || book.Id.Equals(model.Id);
             return Json(isAllow);
+        }
+
+        private string getImageThumbnailUrl(string url)
+        {
+            //https://res.cloudinary.com/dqqutlkvs/image/upload/v1703626786/vlqdlmfiy1bsfwsndi6b.jpg
+            //https://res.cloudinary.com/dqqutlkvs/image/upload/c_thumb,w_200,g_face/v1703626786/vlqdlmfiy1bsfwsndi6b.jpg
+            var seperator = "/image/upload/";
+            var urlParts = url.Split(seperator);
+            var thumbnailUrl = $"{urlParts[0]}{seperator}c_thumb,w_200,g_face/{urlParts[1]}";
+            return thumbnailUrl;
+
         }
 
     }

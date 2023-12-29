@@ -151,22 +151,29 @@ $(document).ready(function () {
     //datepicker
     $('.js_datepicker').daterangepicker({
         singleDatePicker: true,
-       /* maxDate: new Date(),*/
+       maxDate: new Date(),
         drops: 'auto',
         autoApply:true
 
     })
-    //Tiny
-    var options = { selector: ".js_tiny", height: "422" };
+    if ($('.js_tiny').length > 0) {
+        //Tiny
+        var options = { selector: ".js_tiny", height: "422" };
 
-    if (KTThemeMode.getMode() === "dark") {
-        options["skin"] = "oxide-dark";
-        options["content_css"] = "dark";
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+        tinymce.init(options);
     }
 
-    tinymce.init(options);
+
     //select2
     $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        var select = $(this);
+        $('form').validate().element('#' + select.attr('id'));
+    });
 
 
 

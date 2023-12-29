@@ -28,3 +28,13 @@ body {
     background-image: url('../Images/imgPlaceHolder.jpg');
 }
 /*end theme*/
+
+/*select override*/
+.select2-container .select2-selection--single {
+    box-sizing: border-box;
+    cursor: pointer;
+    display: block;
+     height:60px; 
+    user-select: none;
+    -webkit-user-select: none;
+}

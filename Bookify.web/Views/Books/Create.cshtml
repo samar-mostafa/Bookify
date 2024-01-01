@@ -6,7 +6,7 @@
 }
 
 <div class="card">
-  <div class="card-title">
+  <div class="card-title m-5">
         <h2> @(Model.Id != 0 ? "Edit" : "Add") Book</h2>
 
   </div>
@@ -139,7 +139,7 @@
                <div class="col-md-7">
                     <div class="row mb-5">
                         <div class="form-floating">
-                            <textarea class="form-control js_tiny" placeholder="Leave a description here" asp-for="Description"></textarea>
+                            <textarea id="Discription" class="form-control js_tiny" placeholder="Leave a description here" asp-for="Description"></textarea>
                             <label asp-for="Description"></label>
                         </div>
                         <span asp-validation-for="Description" class="text-danger"></span>

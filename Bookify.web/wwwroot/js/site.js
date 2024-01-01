@@ -29,10 +29,14 @@ function showErrorMessage(message = 'something went wrong') {
     });
 }
 
+//loading
+function disableSubmitButton() {
+    $('.js-loading').attr("disabled", "disabled").attr('data-kt-indicator', 'on');
+}
+
 //model
 function onModelBegin() {
-   
-    $('.js-loading').attr("disabled", "disabled").attr('data-kt-indicator','on');
+    disableSubmitButton();   
 }
 function onModelSuccess(row) {
 
@@ -148,6 +152,19 @@ var KTDatatables = function () {
     };
 }();
 $(document).ready(function () {
+    //disable form
+    $('form').on('submit', function () {
+       
+        if ($('.js_tiny').length > 0) {
+            $('.js_tiny').each(function () {
+                var inp = $(this);
+                var content = tinyMCE.get(inp.atrr('id')).getContent();
+                inp.val(content);
+            })
+        }
+        var isValid = $(this).valid();
+        if (isValid) disableSubmitButton();
+    })
     //datepicker
     $('.js_datepicker').daterangepicker({
         singleDatePicker: true,

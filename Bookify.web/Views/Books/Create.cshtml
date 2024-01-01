@@ -65,7 +65,7 @@
                             <input type="text" class="form-control" placeholder="" asp-for="Title" />
                             <label asp-for="Title"></label>
                         </div>
-                        <span asp-validation-for="Title" class="text-danger"></span>
+                        <span asp-validation-for="Title" class="text-danger d-block"></span>
                     </div>
 
                     <div class="row mb-5 ">
@@ -77,7 +77,7 @@
                             </select>
 
                         </div>
-                        <span asp-validation-for="AuthorId" class="text-danger"></span>
+                        <span asp-validation-for="AuthorId" class="text-danger d-block"></span>
                     </div>
 
                     <div class="row mb-5">
@@ -89,7 +89,7 @@
                             </select>
 
                         </div>
-                        <span asp-validation-for="SelectedCategories" class="text-danger"></span>
+                        <span asp-validation-for="SelectedCategories" class="text-danger d-block"></span>
                     </div>
 
                     <div class="row mb-5">
@@ -97,7 +97,7 @@
                             <input type="text" class="form-control" placeholder="" asp-for="Publisher" />
                             <label asp-for="Publisher"></label>
                         </div>
-                        <span asp-validation-for="Publisher" class="text-danger"></span>
+                        <span asp-validation-for="Publisher" class="text-danger d-block"></span>
                     </div>
 
                     <div class="row mb-5">
@@ -105,7 +105,7 @@
                             <input type="text" class="form-control js_datepicker" placeholder="" asp-for="PublishingDate" />
                             <label asp-for="PublishingDate"></label>
                         </div>
-                        <span asp-validation-for="PublishingDate" class="text-danger"></span>
+                        <span asp-validation-for="PublishingDate" class="text-danger d-block"></span>
                     </div>
                     @* <div class="row mb-5">
                     <div>
@@ -121,7 +121,7 @@
                     </div>*@
                     <div class="row mb-5">
                         <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" value="" asp-for="IsAvailableForRent">
+                            <input class="form-check-input" type="checkbox"  asp-for="IsAvailableForRent">
                             <label class="form-check-label" asp-for="IsAvailableForRent"></label>
                         </div>
 
@@ -131,7 +131,7 @@
                             <input type="text" class="form-control" placeholder="" asp-for="Hall" />
                             <label asp-for="Hall"></label>
                         </div>
-                        <span asp-validation-for="Hall" class="text-danger"></span>
+                        <span asp-validation-for="Hall" class="text-danger d-block"></span>
                     </div>
 
                    
@@ -142,7 +142,7 @@
                             <textarea id="Discription" class="form-control js_tiny" placeholder="Leave a description here" asp-for="Description"></textarea>
                             <label asp-for="Description"></label>
                         </div>
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <span asp-validation-for="Description" class="text-danger d-block"></span>
                     </div>
 
                </div>

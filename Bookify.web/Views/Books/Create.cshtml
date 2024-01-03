@@ -7,12 +7,16 @@
 
 <div class="card">
   <div class="card-title m-5">
-        <h2> @(Model.Id != 0 ? "Edit" : "Add") Book</h2>
+        <h2> @(Model.Id > 0 ? "Edit" : "Add") Book</h2>
 
   </div>
     <div class="card-body">
         <form asp-controller="Books" method="post" enctype="multipart/form-data" id="form">
-            <input asp-for="Id" hidden/>
+            @if (Model.Id > 0)
+            {
+                <input asp-for="Id" hidden />
+            }
+         
            <div class="mb-10">
                 <!--begin::Image input-->
 
@@ -65,7 +69,7 @@
                             <input type="text" class="form-control" placeholder="" asp-for="Title" />
                             <label asp-for="Title"></label>
                         </div>
-                        <span asp-validation-for="Title" class="text-danger d-block"></span>
+                        <span asp-validation-for="Title" class="text-danger d-block      "></span>
                     </div>
 
                     <div class="row mb-5 ">

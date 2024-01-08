@@ -37,6 +37,19 @@ namespace Bookify.web.Controllers
             return View();
         }
 
+        public IActionResult Details(int id)
+        {
+            var book = context.Books
+                .Include(b=>b.Author)
+                .Include(b=>b.categories)
+                .ThenInclude(c=>c.Category)
+                .SingleOrDefault(b=>b.Id==id);
+            if (book is null)
+                return NotFound();
+            var viewModel =mapper.Map<BookViewModel>(book); 
+
+            return View(viewModel);
+        }
         public IActionResult Create()
         {
             return View(PopulateModel());
@@ -77,7 +90,7 @@ namespace Bookify.web.Controllers
                     return View(PopulateModel(model));
                 }
 
-                var imageName = $"{new Guid()}{extension}";
+                var imageName = $"{Guid.NewGuid()}{extension}";
                 var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
                 var thumbPath = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books/thumb", imageName);
                 using var stream = System.IO.File.Create(path);
@@ -112,7 +125,7 @@ namespace Bookify.web.Controllers
             
             context.Add(book);
             context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Details),new { id = book.Id });
 
         }
 
@@ -130,7 +143,7 @@ namespace Bookify.web.Controllers
             if (book is null)
                 return NotFound();
 
-           
+
 
             if (model.Image is not null)
             {
@@ -160,7 +173,7 @@ namespace Bookify.web.Controllers
                     return View(PopulateModel(model));
                 }
 
-                var imageName = $"{new Guid()}{extension}";
+                var imageName = $"{Guid.NewGuid()}{extension}";
 
                 var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
                 var thumbPath = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books/thumb", imageName);
@@ -174,7 +187,7 @@ namespace Bookify.web.Controllers
                 image.Save(thumbPath);
 
                 model.ImageUrl = $"/Images/Books/{imageName}";
-                model.ThumbImageUrl = $"/Images/Books/thumb/{imageName}";
+                model.ImageThumbnailUrl = $"/Images/Books/thumb/{imageName}";
 
                 //using var stream = model.Image.OpenReadStream();
                 //var imageParams = new ImageUploadParams
@@ -186,8 +199,11 @@ namespace Bookify.web.Controllers
                 //model.ImageUrl = result.SecureUri.ToString();
                 //imgPublicId=result.PublicId;
             }
-            else if(model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
+            else if (model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
+            {
                 model.ImageUrl = book.ImageUrl;
+                model.ImageThumbnailUrl = book.ImageThumbnailUrl;
+                    };
 
              book =mapper.Map(model,book);
             //book.ImageThumbnailUrl = getImageThumbnailUrl(book.ImageUrl);
@@ -197,7 +213,7 @@ namespace Bookify.web.Controllers
                 book.categories.Add(new BookCategory { CategoryId = cat });
           
             context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Details), new { id = book.Id });
 
         }
 

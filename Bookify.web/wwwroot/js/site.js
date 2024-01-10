@@ -175,7 +175,7 @@ $(document).ready(function () {
     })
     if ($('.js_tiny').length > 0) {
         //Tiny
-        var options = { selector: ".js_tiny", height: "422" };
+        var options = { selector: ".js_tiny", height: "450" };
 
         if (KTThemeMode.getMode() === "dark") {
             options["skin"] = "oxide-dark";

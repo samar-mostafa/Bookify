@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
+using System.Linq.Dynamic.Core;
 
 namespace Bookify.web.Controllers
 {
@@ -37,6 +38,20 @@ namespace Bookify.web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            var skip =int.Parse(Request.Form["start"]);
+            var pageSize =int.Parse(Request.Form["length"]);
+            var orderColumnIndex=Request.Form["order[0][column]"];
+            var orderColumn = Request.Form[$"columns[{orderColumnIndex}][name]"];
+            var dir = Request.Form["order[0][dir]"];
+            IQueryable<Book> books = context.Books;
+            books = books.OrderBy($"{orderColumn} {dir}");
+            var data = books.Skip(skip).Take(pageSize).ToList();
+            var recordsTotal=books.Count();
+            return Ok(new { recordsFiltered = recordsTotal, recordsTotal, data });
+        }
         public IActionResult Details(int id)
         {
             var book = context.Books
@@ -208,7 +223,7 @@ namespace Bookify.web.Controllers
              book =mapper.Map(model,book);
             //book.ImageThumbnailUrl = getImageThumbnailUrl(book.ImageUrl);
             //book.ImagePublicId = imgPublicId;
-            book.UpdatedOn=DateTime.Now;
+            book.LastUpdatedOn =DateTime.Now;
             foreach (var cat in model.SelectedCategories)
                 book.categories.Add(new BookCategory { CategoryId = cat });
           

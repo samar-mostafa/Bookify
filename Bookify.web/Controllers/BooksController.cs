@@ -46,7 +46,10 @@ namespace Bookify.web.Controllers
             var orderColumnIndex=Request.Form["order[0][column]"];
             var orderColumn = Request.Form[$"columns[{orderColumnIndex}][name]"];
             var dir = Request.Form["order[0][dir]"];
-            IQueryable<Book> books = context.Books;
+            var searchValue = Request.Form["search[value]"];
+            IQueryable<Book> books = context.Books.Include(b=>b.Author);
+            if(!string.IsNullOrEmpty(searchValue))
+                books=books.Where(b=>b.Title.Contains(searchValue) || b.Author!.Name.Contains(searchValue));
             books = books.OrderBy($"{orderColumn} {dir}");
             var data = books.Skip(skip).Take(pageSize).ToList();
             var recordsTotal=books.Count();

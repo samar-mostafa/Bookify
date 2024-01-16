@@ -26,8 +26,8 @@
                             <!--begin::Status-->
                             <div class="d-flex align-items-center mb-1">
                                 <a href="#" class="text-gray-800 text-hover-primary fs-2 fw-bold me-3">@Model.Title</a>
-                                <span class="badge badge-light-@(Model.IsDeleted ? "danger" : Model.IsAvailableForRent ? "success" : "warning") me-auto">
-                                    @(Model.IsDeleted ? "Deleted" : Model.IsAvailableForRent ? "Available for rental" : "Not available for rental")
+                                <span class="badge badge-light-@(Model.IsDeleted ? "danger" : Model.IsAvailableForRental ? "success" : "warning") me-auto">
+                                    @(Model.IsDeleted ? "Deleted" : Model.IsAvailableForRental ? "Available for rental" : "Not available for rental")
                                 </span>
                             </div>
                             <!--end::Status-->

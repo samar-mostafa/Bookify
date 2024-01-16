@@ -1,4 +1,7 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery;
+
+
+@{
     ViewData["Title"]="Books";
     }
 
@@ -65,43 +68,13 @@
         </div>
     </div>
 </div>
+    <input hidden name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
 @section Plugins{
     <script src="~/assets/plugins/datatables.bundle.js"></script>
 }
 
 @section Scripts{
-
-    <script>
-        $(document).ready(function(){
-            $('[data-kt-filter="search"]').on('keyup',function(){
-                var inp = $(this);
-                datatable.search(inp.val()).draw();
-            })
-
-           var datatable= $('#bookTable').DataTable({
-               processing:true,
-                serverSide:true,
-                language:{
-                     processing: '<div class="d-flex justify-content-center text-primary align-items-center dt-spinner"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><span class="text-muted ps-2">Loading...</span></div>'
-                },
-                order:[[1 ,'asc']],
-                ajax:{
-                    url:'Books/GetBooks',
-                    type:'POST'
-                },
-                columnDefs:[
-                    {
-                        targets:[0],
-                        visable:false,
-                        searchable:false
-                    }
-                ],
-                columns:[
-                    {'data':'id','name':'Id','className':'d-none'},
-                    {'data':'title','name':'Title'}
-                ]
-            });
-        });
-    </script>
+    <script src="~/js/books.js" asp-append-version="true"></script>
 
 }

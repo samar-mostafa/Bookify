@@ -13,7 +13,7 @@
         public string? ImageUrl { get; set; }
     
         public string Hall { get; set; } = null!;
-        public bool IsAvailableForRent { get; set; }
+        public bool IsAvailableForRental { get; set; }
 
         public string Description { get; set; } = null!;
 

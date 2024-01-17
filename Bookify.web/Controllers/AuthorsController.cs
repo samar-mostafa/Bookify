@@ -65,7 +65,7 @@
                 return NotFound();
 
             author = mapper.Map(model, author);
-            author.UpdatedOn = DateTime.Now;
+            author.LastUpdatedOn = DateTime.Now;
             db.SaveChanges();
 
             var viewModel = mapper.Map<AuthorOrCategoryViewModel>(author);
@@ -82,11 +82,11 @@
                 return NotFound();
 
             cat.IsDeleted = !cat.IsDeleted;
-            cat.UpdatedOn = DateTime.Now;
+            cat.LastUpdatedOn = DateTime.Now;
 
             db.SaveChanges();
 
-            return Ok(cat.UpdatedOn.ToString());
+            return Ok(cat.LastUpdatedOn.ToString());
         }
     }
 }

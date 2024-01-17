@@ -63,7 +63,7 @@
                 return NotFound();
 
             category = _mapper.Map(model, category);
-            category.UpdatedOn = DateTime.Now;
+            category.LastUpdatedOn = DateTime.Now;
             dbContext.SaveChanges();
             var viewModel = _mapper.Map<AuthorOrCategoryViewModel>(category);
 
@@ -82,11 +82,11 @@
                 return NotFound();
 
             cat.IsDeleted = !cat.IsDeleted;
-            cat.UpdatedOn = DateTime.Now;
+            cat.LastUpdatedOn = DateTime.Now;
 
             dbContext.SaveChanges();
 
-            return Ok(cat.UpdatedOn.ToString());
+            return Ok(cat.LastUpdatedOn.ToString());
         }
 
         public IActionResult AllowItem(CreateFormViewModel model)

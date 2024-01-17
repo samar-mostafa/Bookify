@@ -6,6 +6,7 @@ using Humanizer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
+using System.Linq.Dynamic.Core;
 
 namespace Bookify.web.Controllers
 {
@@ -37,6 +38,25 @@ namespace Bookify.web.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            var skip =int.Parse(Request.Form["start"]);
+            var pageSize =int.Parse(Request.Form["length"]);
+            var orderColumnIndex=Request.Form["order[0][column]"];
+            var orderColumn = Request.Form[$"columns[{orderColumnIndex}][name]"];
+            var dir = Request.Form["order[0][dir]"];
+            var searchValue = Request.Form["search[value]"];
+            IQueryable<Book> books = context.Books.Include(b=>b.Author)
+                .Include(b=>b.categories).ThenInclude(b=>b.Category);
+            if(!string.IsNullOrEmpty(searchValue))
+                books=books.Where(b=>b.Title.Contains(searchValue) || b.Author!.Name.Contains(searchValue));
+            books = books.OrderBy($"{orderColumn} {dir}");
+            var data = books.Skip(skip).Take(pageSize).ToList();
+            var mappedData=mapper.Map<IEnumerable<BookViewModel>>(data);
+            var recordsTotal=books.Count();
+            return Ok(new { recordsFiltered = recordsTotal, recordsTotal, data=mappedData });
+        }
         public IActionResult Details(int id)
         {
             var book = context.Books
@@ -208,7 +228,7 @@ namespace Bookify.web.Controllers
              book =mapper.Map(model,book);
             //book.ImageThumbnailUrl = getImageThumbnailUrl(book.ImageUrl);
             //book.ImagePublicId = imgPublicId;
-            book.UpdatedOn=DateTime.Now;
+            book.LastUpdatedOn =DateTime.Now;
             foreach (var cat in model.SelectedCategories)
                 book.categories.Add(new BookCategory { CategoryId = cat });
           
@@ -229,6 +249,22 @@ namespace Bookify.web.Controllers
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+            var book = context.Books.Find(id);
+
+            if (book is null)
+                return NotFound();
+
+            book.IsDeleted = !book.IsDeleted;
+            book.LastUpdatedOn = DateTime.Now;
+
+            context.SaveChanges();
+
+            return Ok();
+        }
         public IActionResult AllowItem(BookFormViewModel model)
         {
             var book = context.Books.SingleOrDefault(b=>b.Title==model.Title && b.AuthorId ==model.AuthorId);

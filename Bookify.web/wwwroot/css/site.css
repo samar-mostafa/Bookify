@@ -38,3 +38,9 @@ body {
     user-select: none;
     -webkit-user-select: none;
 }
+
+/*custom style*/
+.dt-spinner +div {
+    display:none !important;
+}
+/*end custom style*/

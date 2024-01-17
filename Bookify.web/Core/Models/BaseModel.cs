@@ -4,6 +4,6 @@
     {
         public bool IsDeleted { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public DateTime UpdatedOn { get; set; }
+        public DateTime? LastUpdatedOn { get; set; }
     }
 }

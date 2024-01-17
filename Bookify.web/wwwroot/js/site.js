@@ -166,16 +166,18 @@ $(document).ready(function () {
         if (isValid) disableSubmitButton();
     })
     //datepicker
-    $('.js_datepicker').daterangepicker({
-        singleDatePicker: true,
-       maxDate: new Date(),
-        drops: 'auto',
-        autoApply:true
+    if ($('.js_datepicker').length > 0) {
+        $('.js_datepicker').daterangepicker({
+            singleDatePicker: true,
+            maxDate: new Date(),
+            drops: 'auto',
+            autoApply: true
 
-    })
+        })
+    }
     if ($('.js_tiny').length > 0) {
         //Tiny
-        var options = { selector: ".js_tiny", height: "422" };
+        var options = { selector: ".js_tiny", height: "450" };
 
         if (KTThemeMode.getMode() === "dark") {
             options["skin"] = "oxide-dark";

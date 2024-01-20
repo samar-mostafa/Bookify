@@ -8,5 +8,6 @@
         public const string AllowedImageSize = "file cannot be more than 2 MB!";
         public const string AllowedDate = "Date can not be in future";
         public const string DublicatedBook = "book with this title is allready exist with this author";
+        public const string InvalidRange = "{0} shoud be between {1} and{2}";
     }
 }

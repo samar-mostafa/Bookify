@@ -1,9 +1,11 @@
 ﻿@model BookViewModel
-
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery;
 @{
     ViewData["Title"] = Model.Title;
 }
-
+@*@section Styles{
+    <link href="~/assets/plugins/datatables.bundle.css" rel="stylesheet" />
+}*@
 <div class="content flex-column-fluid" id="kt_content">
     <!--begin::Navbar-->
     <div class="card mb-9">
@@ -104,7 +106,7 @@
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7857 7.125H6.21429C5.62255 7.125 5.14286 7.6007 5.14286 8.1875V18.8125C5.14286 19.3993 5.62255 19.875 6.21429 19.875H14.7857C15.3774 19.875 15.8571 19.3993 15.8571 18.8125V8.1875C15.8571 7.6007 15.3774 7.125 14.7857 7.125ZM6.21429 5C4.43908 5 3 6.42709 3 8.1875V18.8125C3 20.5729 4.43909 22 6.21429 22H14.7857C16.5609 22 18 20.5729 18 18.8125V8.1875C18 6.42709 16.5609 5 14.7857 5H6.21429Z" fill="currentColor" />
                                         </svg>
                                     </span>
-                                    <div class="fs-7 fw-bold" data-kt-countup="true" data-kt-countup-value="7">0</div>
+                                    <div class="fs-7 fw-bold" data-kt-countup="true" data-kt-countup-value="@Model.BookCopies.Count()">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
@@ -168,18 +170,106 @@
             <div class="card-header">
                 <!--begin::Card title-->
                 <div class="card-title fs-3 fw-bold">Copies</div>
+                <div class="card-toolbar">
+                    <a href="javascript:;" class="btn btn-sm btn-primary js-model-render" data-title="Add Book Copy"
+                    data-url="/BookCopies/Create?bookId=@Model.Id">
+                        <i class="bi bi-plus-square-dotted"></i>
+                        Add
+                    </a>
+                </div>
+               
                 <!--end::Card title-->
             </div>
             <!--end::Card header-->
             <div class="card-body">
-                Copies
+
+                <table class="table table-row-bordered gy-2 align-middle " data-documentTitle="Copies">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-800">
+                            <th>Serial Number</th>
+                            <th>Edition</th>
+                            <th>Rental?</th>
+                            <th>Status</th>
+                            <th>Created On</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    
+                @foreach(var copy in Model.BookCopies)
+                    {
+                        <tr>
+                            <td>@copy.SerialNumber</td>
+                            <td>@copy.EditionNumber</td>
+                            <td>
+                                <span class="badge badge-light-@(copy.IsAvailableForRental ?"success" :"warning")">
+                                    @(copy.IsAvailableForRental ? "Available" : "Not Available")
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge badge-light-@(copy.IsDeleted?"warning":"success")  js-status">
+                                    @(copy.IsDeleted ? "Deleted" : "Available")
+                                </span>
+                            </td>
+                            <td>@copy.CreatedOn.ToShortDateString()</td>
+                            <td class="text-end">
+                                <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary " data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                    <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
+                                    <span class="svg-icon svg-icon-2 ">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                                            <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                <rect x="5" y="5" width="5" height="5" rx="1" fill="currentColor"></rect>
+                                                <rect x="14" y="5" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"></rect>
+                                                <rect x="5" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"></rect>
+                                                <rect x="14" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"></rect>
+                                            </g>
+                                        </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                </button>
+                                <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3" data-kt-menu="true" style="">
+                                    <!--begin::Menu item-->
+                                    <div class="menu-item px-3 js-model-render"
+                                     data-title="Edit Copies"
+                                     data-url="/BookCopies/Edit/@copy.Id"
+                                     data-update="true">
+                                        <a class="menu-link px-3 js-render-modal">
+                                            Edit
+                                        </a>
+                                    </div>
+                                    <!--end::Menu item-->
+                                    <!--begin::Menu item-->
+                                    <div class="menu-item px-3">
+                                        <a href="javascript:;" class="menu-link flex-stack px-3 js-toggle-status"
+                                       data-url="/BookCopies/ToggleStatus/@copy.Id">
+                                            Toggle Status
+                                        </a>
+                                    </div>
+                                    <!--end::Menu item-->
+                                </div>
+                            </td>
+
+                        </tr>
+                    }
+
+                </table>
+
+   
             </div>
         </div>
         <!--end::Card-->
     </div>
 </div>
-
+<input hidden name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken"/>
 @section Plugins
     {
     <script src="~/assets/plugins/fslightbox/fslightbox.bundle.js"></script>
+    @*<script src="~/assets/plugins/datatables.bundle.js"></script>*@
+
 }
+
+                                @section Scripts{
+                                    <partial name="_ValidationScriptsPartial" />
+                                }

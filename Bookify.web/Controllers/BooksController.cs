@@ -61,6 +61,7 @@ namespace Bookify.web.Controllers
         {
             var book = context.Books
                 .Include(b=>b.Author)
+               .Include(b=>b.BookCopies)
                 .Include(b=>b.categories)
                 .ThenInclude(c=>c.Category)
                 .SingleOrDefault(b=>b.Id==id);

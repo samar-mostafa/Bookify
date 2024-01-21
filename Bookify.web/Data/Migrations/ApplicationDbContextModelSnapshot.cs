@@ -52,7 +52,7 @@ namespace Bookify.web.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Authors");
+                    b.ToTable("Authors", (string)null);
                 });
 
             modelBuilder.Entity("Bookify.web.Core.Models.Book", b =>
@@ -116,7 +116,7 @@ namespace Bookify.web.Data.Migrations
                     b.HasIndex("Title", "AuthorId")
                         .IsUnique();
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("Bookify.web.Core.Models.BookCategory", b =>
@@ -131,7 +131,7 @@ namespace Bookify.web.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("BookCategories");
+                    b.ToTable("BookCategories", (string)null);
                 });
 
             modelBuilder.Entity("Bookify.web.Core.Models.BookCopy", b =>
@@ -169,7 +169,7 @@ namespace Bookify.web.Data.Migrations
 
                     b.HasIndex("BookId");
 
-                    b.ToTable("BookCopies");
+                    b.ToTable("BookCopies", (string)null);
                 });
 
             modelBuilder.Entity("Bookify.web.Core.Models.Category", b =>
@@ -199,7 +199,7 @@ namespace Bookify.web.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

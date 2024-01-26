@@ -17,7 +17,7 @@ namespace Bookify.web.Helpers
         {
             if (string.IsNullOrEmpty(ActiveWhen))
                 return;
-            var currentContrroller = ViewContextData?.RouteData.Values["controller"]?.ToString();
+            var currentContrroller = ViewContextData?.RouteData.Values["controller"]?.ToString() ?? string.Empty;
 
             if (ActiveWhen.Equals(currentContrroller))
             {

@@ -4,6 +4,7 @@ using Bookify.web.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bookify.web.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240124164808_extendIdentityUser")]
+    partial class extendIdentityUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -37,9 +39,6 @@ namespace Bookify.web.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -60,9 +59,6 @@ namespace Bookify.web.Data.Migrations
 
                     b.Property<DateTime?>("LastUpdatedOn")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("LastUpdatedOnById")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -118,9 +114,6 @@ namespace Bookify.web.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -130,19 +123,12 @@ namespace Bookify.web.Data.Migrations
                     b.Property<DateTime?>("LastUpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastUpdatedOnById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastUpdatedOnById");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -160,9 +146,6 @@ namespace Bookify.web.Data.Migrations
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("int");
-
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
@@ -194,9 +177,6 @@ namespace Bookify.web.Data.Migrations
                     b.Property<DateTime?>("LastUpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastUpdatedOnById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Publisher")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -213,10 +193,6 @@ namespace Bookify.web.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AuthorId");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastUpdatedOnById");
 
                     b.HasIndex("Title", "AuthorId")
                         .IsUnique();
@@ -250,9 +226,6 @@ namespace Bookify.web.Data.Migrations
                     b.Property<int>("BookId")
                         .HasColumnType("int");
 
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -268,9 +241,6 @@ namespace Bookify.web.Data.Migrations
                     b.Property<DateTime?>("LastUpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastUpdatedOnById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("SerialNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
@@ -279,10 +249,6 @@ namespace Bookify.web.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("BookId");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastUpdatedOnById");
 
                     b.ToTable("BookCopies");
                 });
@@ -295,9 +261,6 @@ namespace Bookify.web.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("CreatedById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("datetime2");
 
@@ -307,19 +270,12 @@ namespace Bookify.web.Data.Migrations
                     b.Property<DateTime?>("LastUpdatedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("LastUpdatedOnById")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("LastUpdatedOnById");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -464,21 +420,6 @@ namespace Bookify.web.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Bookify.web.Core.Models.Author", b =>
-                {
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "LastUpdatedOnBy")
-                        .WithMany()
-                        .HasForeignKey("LastUpdatedOnById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastUpdatedOnBy");
-                });
-
             modelBuilder.Entity("Bookify.web.Core.Models.Book", b =>
                 {
                     b.HasOne("Bookify.web.Core.Models.Author", "Author")
@@ -487,19 +428,7 @@ namespace Bookify.web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "LastUpdatedOnBy")
-                        .WithMany()
-                        .HasForeignKey("LastUpdatedOnById");
-
                     b.Navigation("Author");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastUpdatedOnBy");
                 });
 
             modelBuilder.Entity("Bookify.web.Core.Models.BookCategory", b =>
@@ -529,34 +458,7 @@ namespace Bookify.web.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "LastUpdatedOnBy")
-                        .WithMany()
-                        .HasForeignKey("LastUpdatedOnById");
-
                     b.Navigation("Book");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastUpdatedOnBy");
-                });
-
-            modelBuilder.Entity("Bookify.web.Core.Models.Category", b =>
-                {
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "CreatedBy")
-                        .WithMany()
-                        .HasForeignKey("CreatedById");
-
-                    b.HasOne("Bookify.web.Core.Models.ApplicationUser", "LastUpdatedOnBy")
-                        .WithMany()
-                        .HasForeignKey("LastUpdatedOnById");
-
-                    b.Navigation("CreatedBy");
-
-                    b.Navigation("LastUpdatedOnBy");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

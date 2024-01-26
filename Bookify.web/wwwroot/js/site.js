@@ -156,7 +156,7 @@ var KTDatatables = function () {
 }();
 $(document).ready(function () {
     //disable form
-    $('form').on('submit', function () {
+    $('form').not('#signout').on('submit', function () {
        
         if ($('.js_tiny').length > 0) {
             $('.js_tiny').each(function () {
@@ -276,4 +276,8 @@ $(document).ready(function () {
 
     })
 
+    //handle sign out
+    $('.js-singout').on('click', function () {
+        $('#signout').submit();
+    })
 })

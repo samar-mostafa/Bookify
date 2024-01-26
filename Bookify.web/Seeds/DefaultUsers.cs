@@ -14,7 +14,7 @@ namespace Bookify.web.Seeds
                 Email = "Admin@Bookify.com"
             };
             
-            var user = await userManager.FindByNameAsync(admin.UserName);
+            var user = await userManager.FindByEmailAsync(admin.Email);
             if(user is null)
             {
                 await userManager.CreateAsync(admin, "P@ssword123");

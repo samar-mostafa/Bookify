@@ -31,6 +31,9 @@ namespace Bookify.web.Core.Mapping
 
             CreateMap<BookCopyViewModel, BookCopy>().ReverseMap().
                 ForMember(dest => dest.BookTitle, op=>op.MapFrom(src=>src.Book.Title));
+
+            //users
+            CreateMap<ApplicationUser, UserViewModel>();
         }
 
 

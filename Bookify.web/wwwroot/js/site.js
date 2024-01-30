@@ -56,6 +56,14 @@ function onModelComplete() {
     $('body:submit').removeAttr('disabled');
 }
 
+function applySelect2() {
+    $('.js-select2').select2();
+    $('.js-select2').on('select2:select', function (e) {
+        var select = $(this);
+        $('form').not("#signout").validate().element('#' + select.attr('id'));
+    });
+}
+
 //datatables
 var KTDatatables = function () {
     //exclude action cloum
@@ -191,11 +199,7 @@ $(document).ready(function () {
 
 
     //select2
-    $('.js-select2').select2();
-    $('.js-select2').on('select2:select', function (e) {
-        var select = $(this);
-        $('form').validate().element('#' + select.attr('id'));
-    });
+    applySelect2();
 
 
 
@@ -222,7 +226,8 @@ $(document).ready(function () {
             success: function (form) {
                 model.find('#modelBody').html(form);
                /* if ($.validator.unobtrusive != undefined) {*/
-                    $.validator.unobtrusive.parse(model);
+                $.validator.unobtrusive.parse(model);
+                applySelect2();
                 /*}*/
             },
             error: function () {

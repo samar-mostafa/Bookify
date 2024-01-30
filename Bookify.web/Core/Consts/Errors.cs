@@ -9,5 +9,7 @@
         public const string AllowedDate = "Date can not be in future";
         public const string DublicatedBook = "book with this title is allready exist with this author";
         public const string InvalidRange = "{0} shoud be between {1} and{2}";
+        public const string MaxMinLength = "The {0} must be at least {2} and at max {1} characters long.";
+        public const string ConfirmPassword = "The password and confirmation password do not match.";
     }
 }

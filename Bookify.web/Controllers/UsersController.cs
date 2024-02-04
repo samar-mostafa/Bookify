@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using System.Security.Cryptography;
 
 namespace Bookify.web.Controllers
 {
@@ -63,7 +64,109 @@ namespace Bookify.web.Controllers
                 var viewModel = _mapper.Map<UserViewModel>(user);
                 return PartialView("_UserRow", viewModel);
             }
-            return BadRequest();
+            return BadRequest(string.Join(",",result.Errors.Select(e=>e.Description)));
         }
-    }
+
+
+        [HttpGet]
+        [AjaxOnly]
+        public async Task<IActionResult> Edit(string id)
+        {
+            var user = _userManger.FindByIdAsync(id).Result;
+            if (user is null)
+                return NotFound();
+
+            var viewModel = new UserFormViewModel
+            {
+                Id=user.Id,
+                Email=user.Email,
+                FullName=user.FullName,
+                Username=user.UserName,
+                SelectedRoles=await _userManger.GetRolesAsync(user),             
+                Roles = await _roleManager.Roles.Select(x => new SelectListItem
+                {
+                    Text = x.Name,
+                    Value = x.Name
+                }).ToListAsync(),
+          
+            };
+            return PartialView("_Form", viewModel);
+        }
+        public async Task<IActionResult> AllowedUsername(UserFormViewModel mdl)
+       {
+            var user =await _userManger.FindByNameAsync(mdl.Username);
+            var isAllowed= user is null || user.Id.Equals(mdl.Id);
+            return Json(isAllowed);
+        }
+
+        public async Task<IActionResult> AllowedEmail(UserFormViewModel mdl)
+        {
+            var user = await _userManger.FindByEmailAsync(mdl.Email);
+            var isAllowed =user is null || user.Id.Equals(mdl.Id);
+            return Json(isAllowed);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleStatus(string Id)
+        {
+            var user = await _userManger.FindByIdAsync(Id);
+            if (user is null)
+            {
+               return NotFound();   
+            }
+            user!.IsDeleted = !user.IsDeleted;
+            user.LastUpdatedOn = DateTime.Now;
+            user.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+            await _userManger.UpdateAsync(user);
+            return Ok(user.LastUpdatedOn.ToString());
+
+        }
+
+        [HttpGet]
+        [AjaxOnly]
+        public async Task<IActionResult> ResetPassword(string id)
+        {
+            var user = await _userManger.FindByIdAsync(id);
+            if(user is null) 
+                return NotFound();
+
+            var resetPasswordViewModel = new ResetPasswordViewModel
+            {
+                Id = user.Id
+            };
+            return PartialView("_ResetPassword", resetPasswordViewModel);
+        }
+
+
+
+      
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel mdl)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var user = await _userManger.FindByIdAsync(mdl.Id);
+            if (user is null)
+                return NotFound();
+            var currentHashedPassword =user.PasswordHash;
+            await _userManger.RemovePasswordAsync(user);
+            var result = await _userManger.AddPasswordAsync(user, mdl.Password);
+            if(result.Succeeded)
+            {
+                user.LastUpdatedOn= DateTime.Now;
+                user.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+                await _userManger.UpdateAsync(user);
+                var viewModel = _mapper.Map<UserViewModel>(user);
+                return PartialView("_UserRow", viewModel);
+
+            }
+
+            user.PasswordHash = currentHashedPassword;
+            await _userManger.UpdateAsync(user);
+            return BadRequest(string.Join(",", result.Errors.Select(e=>e.Description)));
+        }
+        }
 }

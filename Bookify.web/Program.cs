@@ -26,6 +26,14 @@ builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 builder.Services.AddExpressiveAnnotations();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.
     GetSection(nameof(CloudinarySettings)));
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Default Password settings.
+   
+    options.Password.RequiredLength = 8;
+    options.User.RequireUniqueEmail = true;
+
+});
 
 var app = builder.Build();
 

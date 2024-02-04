@@ -19,7 +19,7 @@ function showSuccessMessage(message = 'Saved successfully') {
 
 function showErrorMessage(message = 'something went wrong') {
     Swal.fire({
-        text: message,
+        text: message.responseText !== undefined? message.responseText : message,
         icon: "error",
         buttonsStyling: false,
         confirmButtonText: "Ok, got it!",

@@ -6,7 +6,8 @@
 
         [Required(ErrorMessage = "enter name")]
         [MaxLength(50, ErrorMessage = Errors.MaxLength)]
-        [Remote("AllowItem", null, ErrorMessage = Errors.Dublicated)]
+        [Remote("AllowItem", null, ErrorMessage = Errors.Dublicated),
+             RegularExpression(RegexPattrens.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
         public string Name { get; set; } = null!;
     }
 }

@@ -32,7 +32,7 @@ namespace Bookify.web.Core.ViewModel
         public string Hall { get; set; } = null!;
 
         [Display(Name = "Is available for rent?")]
-        public bool IsAvailableForRent { get; set; }
+        public bool IsAvailableForRental { get; set; }
 
         public string Description { get; set; } = null!;
 

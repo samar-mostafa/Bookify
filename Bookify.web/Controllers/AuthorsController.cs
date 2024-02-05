@@ -1,5 +1,9 @@
-﻿namespace Bookify.web.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
+namespace Bookify.web.Controllers
 {
+    [Authorize(Roles = AppRoles.Archive)]
     public class AuthorsController : Controller
     {
         private readonly ApplicationDbContext db;
@@ -29,6 +33,7 @@
             if (!ModelState.IsValid)
                 return BadRequest();
             var author = mapper.Map<Author>(model);
+            author.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             db.Add(author);
             db.SaveChanges();
             var viewModel = mapper.Map<AuthorOrCategoryViewModel>(author);
@@ -66,6 +71,7 @@
 
             author = mapper.Map(model, author);
             author.LastUpdatedOn = DateTime.Now;
+            author.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             db.SaveChanges();
 
             var viewModel = mapper.Map<AuthorOrCategoryViewModel>(author);
@@ -83,6 +89,7 @@
 
             cat.IsDeleted = !cat.IsDeleted;
             cat.LastUpdatedOn = DateTime.Now;
+            cat.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             db.SaveChanges();
 

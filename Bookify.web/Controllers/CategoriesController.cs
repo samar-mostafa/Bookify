@@ -1,5 +1,9 @@
-﻿namespace Bookify.web.Controllers
+﻿using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+
+namespace Bookify.web.Controllers
 {
+    [Authorize(Roles =AppRoles.Archive)]
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext dbContext;
@@ -31,6 +35,7 @@
                 return BadRequest();
 
             var cat = _mapper.Map<Category>(model);
+            cat.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             dbContext.Add(cat);
             dbContext.SaveChanges();
             //TempData["Message"] = "Added successfully";
@@ -64,6 +69,7 @@
 
             category = _mapper.Map(model, category);
             category.LastUpdatedOn = DateTime.Now;
+            category.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value; 
             dbContext.SaveChanges();
             var viewModel = _mapper.Map<AuthorOrCategoryViewModel>(category);
 
@@ -83,6 +89,7 @@
 
             cat.IsDeleted = !cat.IsDeleted;
             cat.LastUpdatedOn = DateTime.Now;
+            cat.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
 
             dbContext.SaveChanges();
 

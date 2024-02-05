@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using UoN.ExpressiveAnnotations.NetCore.Attributes;
 
 namespace Bookify.web.Core.ViewModel
 {
@@ -17,13 +18,16 @@ namespace Bookify.web.Core.ViewModel
       
         [StringLength(100, ErrorMessage =Errors.MaxMinLength , MinimumLength = 8), DataType(DataType.Password),
             RegularExpression(RegexPattrens.Password, ErrorMessage = Errors.WeekPassword)]
-        public string Password { get; set; } = null!;
+        [RequiredIf("Id == null" ,ErrorMessage =Errors.Required) ]
+        public string? Password { get; set; } 
 
         [DataType(DataType.Password), Display(Name = "Confirm password"), Compare("Password", ErrorMessage = Errors.ConfirmPassword)]
-        public string ConfirmPassword { get; set; } = null!;
+        [RequiredIf("Id == null", ErrorMessage = Errors.Required)]
+        public string? ConfirmPassword { get; set; } 
         [Display(Name = "Roles")]
         public IList<string> SelectedRoles { get; set; } = new List<string>();
 
         public IEnumerable<SelectListItem>? Roles { get; set; }
+       
     }
 }

@@ -72,25 +72,48 @@ namespace Bookify.web.Controllers
         [AjaxOnly]
         public async Task<IActionResult> Edit(string id)
         {
-            var user = _userManger.FindByIdAsync(id).Result;
+            var user = await _userManger.FindByIdAsync(id);
             if (user is null)
                 return NotFound();
 
-            var viewModel = new UserFormViewModel
+            var viewModel = _mapper.Map<UserFormViewModel>(user);
+            viewModel.SelectedRoles = await _userManger.GetRolesAsync(user);
+            viewModel.Roles = await _roleManager.Roles.Select(x => new SelectListItem
             {
-                Id=user.Id,
-                Email=user.Email,
-                FullName=user.FullName,
-                Username=user.UserName,
-                SelectedRoles=await _userManger.GetRolesAsync(user),             
-                Roles = await _roleManager.Roles.Select(x => new SelectListItem
-                {
-                    Text = x.Name,
-                    Value = x.Name
-                }).ToListAsync(),
-          
-            };
+                Text = x.Name,
+                Value = x.Name
+            }).ToListAsync();      
+           
             return PartialView("_Form", viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult>Edit(UserFormViewModel model)
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var user = await _userManger.FindByIdAsync(model.Id);
+            if(user is null)
+                return NotFound();
+            user = _mapper.Map(model, user);
+            user.LastUpdatedOn = DateTime.Now;
+            user.LastUpdatedOnById = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var result = await _userManger.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                var currentRoles =await _userManger.GetRolesAsync(user);
+                var rolesUpdated = !currentRoles.SequenceEqual(model.SelectedRoles);
+                if (rolesUpdated)
+                {
+                    await _userManger.RemoveFromRolesAsync(user,currentRoles);
+                    await _userManger.AddToRolesAsync(user, model.SelectedRoles);
+
+                }
+                var viewModel = _mapper.Map<UserViewModel>(user);
+                return PartialView("_UserRow", viewModel);
+
+            }
+            return BadRequest(string.Join(",",result.Errors.Select(e=>e.Description)));
         }
         public async Task<IActionResult> AllowedUsername(UserFormViewModel mdl)
        {

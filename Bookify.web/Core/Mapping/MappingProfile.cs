@@ -16,24 +16,27 @@ namespace Bookify.web.Core.Mapping
             //Authors
             CreateMap<Author, AuthorOrCategoryViewModel>();
             CreateMap<CreateFormViewModel, Author>().ReverseMap();
-            CreateMap<Author,SelectListItem>()
-                .ForMember(dest => dest.Value,op =>op.MapFrom(src=>src.Id))
-                .ForMember(dest =>dest.Text,op =>op.MapFrom(src=>src.Name));
+            CreateMap<Author, SelectListItem>()
+                .ForMember(dest => dest.Value, op => op.MapFrom(src => src.Id))
+                .ForMember(dest => dest.Text, op => op.MapFrom(src => src.Name));
 
             //books
             CreateMap<BookFormViewModel, Book>().ReverseMap().
-                ForMember(dest=>dest.Categories,opt=>opt.Ignore());
+                ForMember(dest => dest.Categories, opt => opt.Ignore());
 
             CreateMap<Book, BookViewModel>().
-                ForMember(des=>des.Author,op=>op.MapFrom(src=>src.Author!.Name))
-                .ForMember(des=>des.Categories,op=>op.MapFrom
-                (src=>src.categories.Select(c=>c.Category!.Name)));
+                ForMember(des => des.Author, op => op.MapFrom(src => src.Author!.Name))
+                .ForMember(des => des.Categories, op => op.MapFrom
+                (src => src.categories.Select(c => c.Category!.Name)));
 
             CreateMap<BookCopyViewModel, BookCopy>().ReverseMap().
-                ForMember(dest => dest.BookTitle, op=>op.MapFrom(src=>src.Book.Title));
+                ForMember(dest => dest.BookTitle, op => op.MapFrom(src => src.Book.Title));
 
             //users
             CreateMap<ApplicationUser, UserViewModel>();
+            CreateMap<UserFormViewModel, ApplicationUser>().
+                ForMember(dest => dest.NormalizedEmail, op => op.MapFrom(src => src.Email.ToUpper()))
+                .ForMember(dest => dest.NormalizedUserName, op => op.MapFrom(src => src.Username.ToUpper())).ReverseMap();
         }
 
 

@@ -1,11 +1,11 @@
 using Bookify.web.Core.Mapping;
 using Bookify.web.Core.Settings;
+using Bookify.web.Helpers;
 using Bookify.web.Seeds;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
-using Bookify.web.Data;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +21,7 @@ builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.Si
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultUI().
     AddDefaultTokenProviders();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser> ,ApplicationUserClaimsPrincipalFactory>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 builder.Services.AddExpressiveAnnotations();

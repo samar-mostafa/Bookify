@@ -8,10 +8,10 @@ namespace Bookify.web.Seeds
         {
             var admin = new ApplicationUser
             {
-                FullName = "Admin",
+                FullName = "Admin1",
                 EmailConfirmed = true,
-                UserName = "admin",
-                Email = "Admin@Bookify.com"
+                UserName = "admin1",
+                Email = "Admin1@Bookify.com"
             };
             
             var user = await userManager.FindByEmailAsync(admin.Email);

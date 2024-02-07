@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿
+@inject SignInManager<ApplicationUser> SignInManager
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -35,6 +38,8 @@
         <span class="text-gray-800 fs-6 fw-semibold mt-5">Loading...</span>
     </div>
     <!--end::Page loading-->
+    @if(SignInManager.IsSignedIn(User))
+    {
     <div class="d-flex flex-column flex-root">
         <!--begin::Page-->
         <div class="page d-flex flex-row flex-column-fluid">
@@ -65,6 +70,14 @@
         </div>
         <!--end::Page-->
     </div>
+    }
+    else
+    {
+       
+            @RenderBody()
+        
+    }
+    
     <!--end::Root-->
     <!--end::Main-->
     <!--begin::Scrolltop-->

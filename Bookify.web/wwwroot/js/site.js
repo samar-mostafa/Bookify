@@ -244,7 +244,7 @@ $(document).ready(function () {
         var btn = $(this);
         var btnStatusId = btn.data('id');
         bootbox.confirm({
-            message: 'are you sure to change the category status?',
+            message: 'are you sure to change the status?',
             buttons: {
                 confirm: {
                     label: 'Yes',
@@ -280,7 +280,41 @@ $(document).ready(function () {
 
 
     })
+    //handle confirm
+    $('body').delegate('.js-confirm', 'click', function () {
+        var btn = $(this);
+       
+        bootbox.confirm({
+            message: btn.data('message'),
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-primary'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-danger'
+                }
+            },
+            callback: function (result) {
+                if (result)
+                    $.post({
+                        url: btn.data('url'),
+                        data: {
+                            '__RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                            showSuccessMessage()
+                        },
+                        error: function () {
+                            showErrorMessage()
+                        }
+                    })
+            }
+        });
 
+
+    })
     //handle sign out
     $('.js-singout').on('click', function () {
         $('#signout').submit();

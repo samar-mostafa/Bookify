@@ -52,12 +52,16 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
         /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
-            [Phone]
-            [Display(Name = "Phone number")]
+			[Required, MaxLength(20, ErrorMessage = Errors.MaxLength), Display(Name = "Full Name"),
+			RegularExpression(RegexPattrens.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
+			public string FullName { get; set; } 
+			/// <summary>
+			///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
+			///     directly from your code. This API may change or be removed in future releases.
+			/// </summary>
+			[Phone]
+            [Display(Name = "Phone number"),
+                RegularExpression(RegexPattrens.MobileNumber,ErrorMessage =Errors.InvalidMobileNumber)]
             public string PhoneNumber { get; set; }
         }
 
@@ -70,6 +74,7 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
+                FullName=user.FullName,
                 PhoneNumber = phoneNumber
             };
         }
@@ -110,6 +115,17 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
                     return RedirectToPage();
                 }
             }
+            if(Input.FullName != user.FullName)
+            {
+                user.FullName = Input.FullName;
+                var setFullnameResult = await _userManager.UpdateAsync(user);
+				if (!setFullnameResult.Succeeded)
+				{
+					StatusMessage = "Unexpected error when trying to set fullname.";
+					return RedirectToPage();
+				}
+
+			}
 
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";

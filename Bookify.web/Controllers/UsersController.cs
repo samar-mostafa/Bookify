@@ -24,8 +24,9 @@ namespace Bookify.web.Controllers
 
         public async Task<IActionResult>  Index()
         {
+
             var users = await _userManger.Users.ToListAsync();
-            var viewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
+             var viewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
             return View(viewModel);
         }
 

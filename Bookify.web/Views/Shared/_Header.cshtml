@@ -1,4 +1,12 @@
-﻿@using System.Security.Claims
+﻿
+
+@using System.Security.Claims
+@inject IWebHostEnvironment webHostEnvironment
+@{
+	var avatarUrl = ($"{webHostEnvironment.WebRootPath}/images/users/{User.FindFirst(ClaimTypes.NameIdentifier)!.Value}.png");
+	var avatarImage = System.IO.File.Exists(avatarUrl) ? $"/images/users/{User.FindFirst(ClaimTypes.NameIdentifier)!.Value}.png" :
+	"/assets/images/avatar.png";
+}
 <div id="kt_header" class="header">
 	<!--begin::Container-->
 	<div class="container-fluid d-flex flex-stack">
@@ -134,7 +142,7 @@
 					<!--end::Name-->
 					<!--begin::Symbol-->
 					<div class="symbol symbol-30px symbol-md-40px">
-						<img src="~/assets/images/avatar.png" alt="image" />
+						<img src=@avatarImage alt="image" />
 					</div>
 					<!--end::Symbol-->
 				</div>
@@ -146,7 +154,7 @@
 						<div class="menu-content d-flex align-items-center px-3">
 							<!--begin::Avatar-->
 							<div class="symbol symbol-50px me-5">
-								<img alt="Logo" src="~/assets/images/avatar.png" />
+								<img alt="Logo" src=@avatarImage />
 							</div>
 							<!--end::Avatar-->
 							<!--begin::Username-->

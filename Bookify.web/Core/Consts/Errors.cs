@@ -19,5 +19,6 @@
         public const string DenySpecialCharacters = "Special characters are not allowed.";
         public const string InvaildCheckPassword = "This password is not correct";
         public const string Required = "This field is required";
+        public const string InvalidMobileNumber = "Invalid mobile number";
     }
 }

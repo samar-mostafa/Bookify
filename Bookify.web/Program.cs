@@ -1,4 +1,5 @@
 using Bookify.web.Core.Mapping;
+using Bookify.web.Core.Services;
 using Bookify.web.Core.Settings;
 using Bookify.web.Helpers;
 using Bookify.web.Seeds;
@@ -35,7 +36,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = true;
 
 });
-
+builder.Services.AddTransient<IImageService, ImageService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

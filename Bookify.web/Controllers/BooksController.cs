@@ -165,46 +165,27 @@ namespace Bookify.web.Controllers
             {
                 if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
-                    var oldImagePath = $"{webHostEnvironment.WebRootPath}{book.ImageUrl}";
-                    var oldThumbImagePath = $"{webHostEnvironment.WebRootPath}{book.ImageThumbnailUrl}";
-                    if (System.IO.File.Exists(oldImagePath))
-                        System.IO.File.Delete(oldImagePath);
-
-                    if (System.IO.File.Exists(oldThumbImagePath))
-                        System.IO.File.Delete(oldThumbImagePath);
+                   imageService.Delete(book.ImageUrl,book.ImageThumbnailUrl);
 
                     //await _cloudinary.DeleteResourcesAsync(book.ImagePublicId); 
                 }
 
 
-                var extension = Path.GetExtension(model.Image.FileName);
-                if (!_allowedImageExtensions.Contains(extension))
+
+
+
+                var imageName = $"{Guid.NewGuid()}{Path.GetExtension(model.Image.FileName)}";
+                var (isUploaded, errorMessage) = await imageService.UploadAsync(model.Image, imageName, "/Images/Books/", hasThumbnail: true);
+                if (isUploaded)
                 {
-                    ModelState.AddModelError(nameof(model.Image), Errors.AllowedImageExtensions);
-                    return View(PopulateModel(model));
+                    model.ImageUrl = $"/Images/Books/{imageName}";
+                    model.ImageThumbnailUrl = $"/Images/Books/thumb/{imageName}";
                 }
-                if (_allowedImageSize < model.Image.Length)
+                else
                 {
-                    ModelState.AddModelError(nameof(model.Image), Errors.AllowedImageSize);
-                    return View(PopulateModel(model));
+                    ModelState.AddModelError(nameof(Image), errorMessage);
+                    return View("Create", PopulateModel(model));
                 }
-
-                var imageName = $"{Guid.NewGuid()}{extension}";
-
-                var path = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books", imageName);
-                var thumbPath = Path.Combine($"{webHostEnvironment.WebRootPath}/Images/Books/thumb", imageName);
-                using var stream = System.IO.File.Create(path);
-                await model.Image.CopyToAsync(stream);
-                stream.Dispose();
-                using var image = Image.Load(model.Image.OpenReadStream());
-                var ratio = (float)image.Width / 200;
-                var height = image.Height / ratio;
-                image.Mutate(i => i.Resize(width: 200, height: (int)height));
-                image.Save(thumbPath);
-
-                model.ImageUrl = $"/Images/Books/{imageName}";
-                model.ImageThumbnailUrl = $"/Images/Books/thumb/{imageName}";
-
                 //using var stream = model.Image.OpenReadStream();
                 //var imageParams = new ImageUploadParams
                 //{

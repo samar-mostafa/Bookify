@@ -14,7 +14,10 @@ namespace Bookify.web.Core.Services
 		{
 			this.webHostEnvironment = webHostEnvironment;
 		}
-		public async Task<(bool isUploaded, string? errorMessage)> UploadAsync(IFormFile image, string imageName, string folderPath, bool hasThumbnail)
+
+      
+
+        public async Task<(bool isUploaded, string? errorMessage)> UploadAsync(IFormFile image, string imageName, string folderPath, bool hasThumbnail)
 		{
 			var extension = Path.GetExtension(image.FileName);
 			if (!_allowedImageExtensions.Contains(extension))
@@ -38,8 +41,23 @@ namespace Bookify.web.Core.Services
 			}
 
 			return (isUploaded: true, errorMessage: null);
-
-
 		}
-	}
+
+        public void Delete(string imagePath, string? thumbnailImagePath = null)
+        {
+            var oldImagePath = $"{webHostEnvironment.WebRootPath}{imagePath}";
+           
+            if (File.Exists(oldImagePath))
+                File.Delete(oldImagePath);
+
+
+			if (!string.IsNullOrEmpty(thumbnailImagePath))
+			{
+                var oldThumbImagePath = $"{webHostEnvironment.WebRootPath}{thumbnailImagePath}";
+                if (File.Exists(oldThumbImagePath))
+                    File.Delete(oldThumbImagePath);
+            }
+           
+        }
+    }
 }

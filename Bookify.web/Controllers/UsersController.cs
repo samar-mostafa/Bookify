@@ -143,6 +143,8 @@ namespace Bookify.web.Controllers
             user.LastUpdatedOn = DateTime.Now;
             user.LastUpdatedOnById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             await _userManger.UpdateAsync(user);
+            if(user.IsDeleted)
+                await _userManger.UpdateSecurityStampAsync(user);
             return Ok(user.LastUpdatedOn.ToString());
 
         }

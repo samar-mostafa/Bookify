@@ -7,9 +7,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Bookify.web.Core.Models;
+using Bookify.web.Core.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Bookify.web.Areas.Identity.Pages.Account.Manage
 {
@@ -17,13 +19,16 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IImageService _imageService;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
-            SignInManager<ApplicationUser> signInManager)
+            SignInManager<ApplicationUser> signInManager,
+            IImageService imageService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _imageService = imageService;
         }
 
         /// <summary>
@@ -63,6 +68,10 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Phone number"),
                 RegularExpression(RegexPattrens.MobileNumber,ErrorMessage =Errors.InvalidMobileNumber)]
             public string PhoneNumber { get; set; }
+
+            public IFormFile Avatar { get; set; }
+
+            public bool AvatarRemoved {  get; set; }
         }
 
         private async Task LoadAsync(ApplicationUser user)
@@ -104,6 +113,20 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
                 await LoadAsync(user);
                 return Page();
             }
+
+            if(Input.Avatar != null)
+            {
+                _imageService.Delete($"/images/users/{user.Id}.png");
+                var (isUploaded, errorMessage) = await _imageService.UploadAsync(Input.Avatar,$"{user.Id}.png","/images/users",hasThumbnail:false);
+                if (!isUploaded)
+                {
+                    ModelState.AddModelError("Input.Avatar", errorMessage);
+                    await LoadAsync(user);
+                    return Page();
+                }
+            }
+            else if (Input.AvatarRemoved)
+                _imageService.Delete($"/images/users/{user.Id}.png");
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)

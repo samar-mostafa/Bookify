@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
@@ -13,18 +14,20 @@ namespace Bookify.web.Controllers
         private readonly UserManager<ApplicationUser> _userManger;
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IEmailSender _emailSender;
 
 
-        public UsersController(UserManager<ApplicationUser> userManger, IMapper mapper,RoleManager<IdentityRole>roleManager)
+		public UsersController(UserManager<ApplicationUser> userManger, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
+		{
+			_userManger = userManger;
+			_mapper = mapper;
+			_roleManager = roleManager;
+			_emailSender = emailSender;
+		}
+
+		public async Task<IActionResult>  Index()
         {
-            _userManger = userManger;
-            _mapper = mapper;
-            _roleManager = roleManager;
-        }
-
-        public async Task<IActionResult>  Index()
-        {
-
+          
             var users = await _userManger.Users.ToListAsync();
              var viewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
             return View(viewModel);

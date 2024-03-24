@@ -4,6 +4,7 @@ using Bookify.web.Core.Settings;
 using Bookify.web.Helpers;
 using Bookify.web.Seeds;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 
@@ -29,6 +30,8 @@ builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
 builder.Services.AddExpressiveAnnotations();
 builder.Services.Configure<CloudinarySettings>(builder.Configuration.
     GetSection(nameof(CloudinarySettings)));
+
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
 builder.Services.Configure<IdentityOptions>(options =>
 {
     // Default Password settings.
@@ -38,6 +41,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 
 });
 builder.Services.AddTransient<IImageService, ImageService>();
+builder.Services.AddTransient<IEmailSender,EmailSender>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

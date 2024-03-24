@@ -27,7 +27,7 @@ namespace Bookify.web.Controllers
 
 		public async Task<IActionResult>  Index()
         {
-            await _emailSender.SendEmailAsync("ahmed.el7bashy@gmail.com", "hello ahmed", "this is my first email i send from my app , thanks for your support..love uu to the moon");
+          
             var users = await _userManger.Users.ToListAsync();
              var viewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
             return View(viewModel);

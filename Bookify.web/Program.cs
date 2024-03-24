@@ -19,7 +19,7 @@ options.ValidationInterval = TimeSpan.Zero);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultUI().
     AddDefaultTokenProviders();
@@ -35,7 +35,7 @@ builder.Services.Configure<IdentityOptions>(options =>
    
     options.Password.RequiredLength = 8;
     options.User.RequireUniqueEmail = true;
-
+  
 });
 builder.Services.AddTransient<IImageService, ImageService>();
 var app = builder.Build();

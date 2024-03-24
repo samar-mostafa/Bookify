@@ -55,6 +55,7 @@ namespace Bookify.web.Controllers
                 FullName = mdl.FullName,
                 UserName = mdl.Username,
                 Email = mdl.Email,
+                //EmailConfirmed = true,
                 CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value
             };
 

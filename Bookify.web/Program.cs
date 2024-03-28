@@ -20,7 +20,7 @@ options.ValidationInterval = TimeSpan.Zero);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultUI().
     AddDefaultTokenProviders();
@@ -42,6 +42,7 @@ builder.Services.Configure<IdentityOptions>(options =>
 });
 builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IEmailSender,EmailSender>();
+builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

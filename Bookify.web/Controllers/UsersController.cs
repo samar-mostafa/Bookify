@@ -3,8 +3,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Security.Claims;
 using System.Security.Cryptography;
+using System.Text.Encodings.Web;
+using System.Text;
+using Bookify.web.Core.Services;
 
 namespace Bookify.web.Controllers
 {
@@ -15,18 +19,25 @@ namespace Bookify.web.Controllers
         private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailBodyBuilder _emailBodyBuilder;
 
 
-		public UsersController(UserManager<ApplicationUser> userManger, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender)
-		{
-			_userManger = userManger;
-			_mapper = mapper;
-			_roleManager = roleManager;
-			_emailSender = emailSender;
-		}
-
-		public async Task<IActionResult>  Index()
+        public UsersController(UserManager<ApplicationUser> userManger, IMapper mapper, RoleManager<IdentityRole> roleManager, IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder)
         {
+            _userManger = userManger;
+            _mapper = mapper;
+            _roleManager = roleManager;
+            _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
+            _emailBodyBuilder = emailBodyBuilder;
+        }
+
+        public async Task<IActionResult>  Index()
+        {
+            
+
+           
           
             var users = await _userManger.Users.ToListAsync();
              var viewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
@@ -66,6 +77,20 @@ namespace Bookify.web.Controllers
             if(result.Succeeded)
             {
                 await _userManger.AddToRolesAsync(user,mdl.SelectedRoles);
+                var code = await _userManger.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                    "/Account/ConfirmEmail",
+                    pageHandler: null,
+                    values: new { area = "Identity", userId = user.Id,code},
+                    protocol: Request.Scheme);
+               
+
+                var body = _emailBodyBuilder.GetEmailBuilder("https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg",
+                   $"Hey {user.FullName} ,thanks for signing up", "Active Account!", "Please confirm your email", HtmlEncoder.Default.Encode(callbackUrl!));
+                
+
+                await _emailSender.SendEmailAsync(user.Email, "Confirm your email",body);
                 var viewModel = _mapper.Map<UserViewModel>(user);
                 return PartialView("_UserRow", viewModel);
             }

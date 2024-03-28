@@ -138,6 +138,11 @@ namespace Bookify.web.Areas.Identity.Pages.Account
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
+
+                if (result.IsNotAllowed)
+                {
+                    return RedirectToPage("./ResendEmailConfirmation", new {userName = user.UserName});
+                }
                 else
                 {
                     ModelState.AddModelError(string.Empty, "Invalid login attempt.");

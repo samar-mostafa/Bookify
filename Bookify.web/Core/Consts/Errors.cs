@@ -20,5 +20,8 @@
         public const string InvaildCheckPassword = "This password is not correct";
         public const string Required = "This field is required";
         public const string InvalidMobileNumber = "Invalid mobile number";
+        public const string InvalidNationalId = "Invalid national id";
+        public const string EmptyImage = "Please select an image";
+
     }
 }

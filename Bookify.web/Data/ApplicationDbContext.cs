@@ -14,9 +14,18 @@ namespace Bookify.web.Data
         public DbSet<BookCopy> BookCopies { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
+        public DbSet<Area> Areas { get; set; }
+        public DbSet<Subscriper> Subscripers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            var cascadeFKs = builder.Model.GetEntityTypes()
+                .SelectMany(t => t.GetForeignKeys()).
+                Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade);
+            foreach (var fk in cascadeFKs)
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+
             builder.HasSequence<int>("SerialNumber", schema:"Shared").StartsAt(1000001);
 
             builder.Entity<BookCopy>().Property(b => b.SerialNumber).

@@ -40,7 +40,13 @@ namespace Bookify.web.Core.Mapping
 
             //subscripers
             CreateMap<Subscriper, SubscriperFormViewModel>().ReverseMap();
+            CreateMap<Subscriper, SubscriberSearchResultViewModel>().
+                ForMember(dest => dest.FullName, op => op.MapFrom(src => $"{src.FirstName}  {src.LastName}"));
 
+            CreateMap<Subscriper, SubscriberViewModel>().
+                 ForMember(dest=>dest.FullName,op=>op.MapFrom(src=>$"{src.FirstName}{src.LastName}"))
+                .ForMember(dest=>dest.Area ,op=>op.MapFrom(src=>src.Area!.Name))
+                .ForMember(dest => dest.Governorate, op => op.MapFrom(src => src.Governorate!.Name));
             //Governorates and Areas
             CreateMap<Area, SelectListItem>().
                 ForMember(dest => dest.Text, op => op.MapFrom(src => src.Name))

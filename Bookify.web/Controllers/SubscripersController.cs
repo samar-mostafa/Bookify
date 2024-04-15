@@ -54,14 +54,14 @@ namespace Bookify.web.Controllers
            if(model.Image is not null)
             {
                 if(!string.IsNullOrEmpty(entity.ImageUrl))
-                
-                    _imageService.Delete(entity.ImageUrl, entity.ImageThumbnailUrl);
+                 _imageService.Delete(entity.ImageUrl, entity.ImageThumbnailUrl);
+
                 var imageName = $"{Guid.NewGuid().ToString()}{Path.GetExtension(model.Image.FileName)}";
                 var (isUploaded, errorMessage) = await _imageService.UploadAsync(model.Image, imageName, "/images/Subscriper", true);
                 if (isUploaded)
                 {
-                    entity.ImageUrl = $"/images/Subscriper/{imageName}";
-                    entity.ImageThumbnailUrl = $"/images/Subscriper/thumb/{imageName}";
+                    model.ImageUrl = $"/images/Subscriper/{imageName}";
+                    model.ImageThumbnailUrl = $"/images/Subscriper/thumb/{imageName}";
 
                 }
                 else
@@ -116,6 +116,19 @@ namespace Bookify.web.Controllers
         
         }
 
+        public IActionResult Details(int id)
+        {
+            var subscriber = _context.Subscripers.Include(s=>s.Area)
+                .Include(s=>s.Governorate).
+                SingleOrDefault();
+
+            if(subscriber == null)
+                return NotFound();
+
+            var viewModel = _mapper.Map<SubscriberViewModel>(subscriber);
+            return View(viewModel);
+        }
+
         [AjaxOnly]
         public IActionResult GetAreas(int governorateId)
         {
@@ -129,6 +142,20 @@ namespace Bookify.web.Controllers
             return Ok(areas);
 
 		}
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Search(SearchFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var subscriper = _context.Subscripers.SingleOrDefault(s=>s.Email == model.Value 
+            || s.MobileNumber == model.Value ||
+            s.NationalId == model.Value);
+            var viewModel = _mapper.Map<SubscriberSearchResultViewModel>(subscriper);
+            return PartialView("_Result", viewModel);
+        }
 
         private SubscriperFormViewModel PopulateModel(SubscriperFormViewModel? model = null)
         {

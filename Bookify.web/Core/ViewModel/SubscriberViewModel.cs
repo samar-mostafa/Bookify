@@ -3,6 +3,7 @@
     
     public class SubscriberViewModel
     {
+        public string Key { get; set; }
         public int Id { get; set; }
         public string? FullName { get; set; }
         public DateTime DateOfBirth { get; set; }

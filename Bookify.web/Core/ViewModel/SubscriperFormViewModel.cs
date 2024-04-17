@@ -6,7 +6,8 @@ namespace Bookify.web.Core.ViewModel
 {
     public class SubscriperFormViewModel
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
+        public string? Key { get; set; }     
 
         [MaxLength(100), Display(Name = "First Name"),
             RegularExpression(RegexPattrens.DenySpecialCharacters,ErrorMessage =Errors.DenySpecialCharacters)]
@@ -22,25 +23,28 @@ namespace Bookify.web.Core.ViewModel
 
         [MaxLength(14), 
          Display(Name = "National Id"),
+            Remote("AllowNationalId",null!,AdditionalFields ="Key",ErrorMessage =Errors.Dublicated),
             RegularExpression(RegexPattrens.NationalId,ErrorMessage =Errors.InvalidNationalId)]
 
         public string NationalId { get; set; } = null!;
 
         [MaxLength(11), Display(Name = "Mobile Number"),
-              RegularExpression(RegexPattrens.MobileNumber, ErrorMessage = Errors.InvalidMobileNumber)]
+              RegularExpression(RegexPattrens.MobileNumber, ErrorMessage = Errors.InvalidMobileNumber),
+             Remote("AllowMobileNumber", null!, AdditionalFields = "Key", ErrorMessage = Errors.Dublicated)]
         public string MobileNumber { get; set; } = null!;
 
         [Display(Name = "Has WhatsApp?")]
         public bool HasWhatsApp { get; set; }
 
-        [MaxLength(150)]
+        [MaxLength(150),EmailAddress,
+              Remote("AllowEmail", null!, AdditionalFields = "Key", ErrorMessage = Errors.Dublicated)]
         public string Email { get; set; } = null!;
 
         public string? ImageUrl { get; set; }
     
         public string? ImageThumbnailUrl { get; set; }
 
-        [RequiredIf("Id==0",ErrorMessage =Errors.EmptyImage)]
+        [RequiredIf("Key==''",ErrorMessage =Errors.EmptyImage)]
         public IFormFile? Image { get; set; } 
 
         [Display(Name = "Area")]

@@ -7,14 +7,14 @@
 
 <div class="card">
     <div class="card-title m-5">
-        <h2> @(Model.Id > 0 ? "Edit" : "Add") Subscriper</h2>
+        <h2> @(!String.IsNullOrEmpty(Model.Key) ? "Edit" : "Add") Subscriper</h2>
 
     </div>
     <div class="card-body">
-        <form asp-controller="Subscripers" asp-action="@(Model.Id > 0 ? "Edit" : "Add")" method="post" enctype="multipart/form-data" id="form">
-            @if (Model.Id > 0)
+        <form asp-controller="Subscripers" asp-action="@(!String.IsNullOrEmpty(Model.Key)? "Edit" : "Create")" method="post" enctype="multipart/form-data" id="form">
+            @if (!String.IsNullOrEmpty(Model.Key))
             {
-                <input asp-for="Id" hidden />
+                <input asp-for="Key" hidden />
             }
 
             <div class="mb-10">

@@ -3,6 +3,7 @@ using Bookify.web.Core.Services;
 using Bookify.web.Core.Settings;
 using Bookify.web.Helpers;
 using Bookify.web.Seeds;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Reflection;
@@ -20,6 +21,7 @@ options.ValidationInterval = TimeSpan.Zero);
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+builder.Services.AddDataProtection().SetApplicationName(nameof(Bookify));
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultUI().

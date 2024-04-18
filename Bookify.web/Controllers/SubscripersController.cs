@@ -116,6 +116,15 @@ namespace Bookify.web.Controllers
                 ModelState.AddModelError(nameof(Image), errorMessage);
                 return View(PopulateModel(model));
             }
+
+            var subsription = new Subscription
+            {
+                CreatedById = entity.CreatedById,
+                CreatedOn = entity.CreatedOn,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1),
+            };
+            entity.Subscriptions.Add(subsription);
               
             _context.Subscripers.Add(entity);
             _context.SaveChanges();

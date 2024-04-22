@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using WhatsAppCloudApi;
+using WhatsAppCloudApi.Services;
+using WhatsAppTemplate = Bookify.web.Core.Consts.WhatsAppTemplate;
 
 namespace Bookify.web.Controllers
 {
@@ -14,12 +17,16 @@ namespace Bookify.web.Controllers
         private readonly IMapper _mapper;
         private readonly IImageService _imageService;
         private readonly IDataProtector _dataProtector;
-        public SubscripersController(ApplicationDbContext context, IMapper mapper, IImageService imageService, IDataProtectionProvider dataProtector)
+        private readonly IWhatsAppClient _whatsAppClient;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public SubscripersController(ApplicationDbContext context, IMapper mapper, IImageService imageService, IDataProtectionProvider dataProtector, IWhatsAppClient whatsAppClient, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _mapper = mapper;
             _imageService = imageService;
             _dataProtector = dataProtector.CreateProtector("MySecureKey");
+            _whatsAppClient = whatsAppClient;
+            _webHostEnvironment = webHostEnvironment;
         }
         public IActionResult Index()
         {
@@ -128,6 +135,25 @@ namespace Bookify.web.Controllers
               
             _context.Subscripers.Add(entity);
             _context.SaveChanges();
+
+            if(model.HasWhatsApp)
+            {
+
+                var components = new List<WhatsAppComponent>
+            {
+                new WhatsAppComponent
+                {
+                    Type="body",
+                    Parameters=new List<object>
+                    {
+                        new WhatsAppTextParameter{Text=model.FirstName}
+                    }
+                }
+            };
+                var mobilNumber = _webHostEnvironment.IsDevelopment() ? "01033500507" : model.MobileNumber;
+                var result = await _whatsAppClient.SendMessage($"2{mobilNumber}", 
+                    WhatsAppLanguageCode.English_US, WhatsAppTemplate.WelcomeMessage, components);
+            }
             var subscriberId =_dataProtector.Protect(entity.Id.ToString());
             return RedirectToAction(nameof(Details) , new {id=subscriberId});
         

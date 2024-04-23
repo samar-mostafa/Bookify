@@ -162,7 +162,7 @@ namespace Bookify.web.Controllers
         public IActionResult Details(string id)
         {
             var subscriberId =int.Parse(_dataProtector.Unprotect(id));
-            var subscriber = _context.Subscripers.Include(s=>s.Area)
+            var subscriber = _context.Subscripers.Include(s=>s.Area).Include(s=>s.Subscriptions)
                 .Include(s=>s.Governorate).Where(s=>s.Id== subscriberId). SingleOrDefault();
 
             if(subscriber == null)
@@ -252,6 +252,43 @@ namespace Bookify.web.Controllers
 
             var isAllowed = entity is null || entity.Id.Equals(id);
             return Json(isAllowed);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult RenewSubscription(string sKey)
+        {
+            var id = 0;
+            if (!string.IsNullOrEmpty(sKey))
+                id = int.Parse(_dataProtector.Unprotect(sKey));
+
+            var subscriber = _context.Subscripers.Include(s=>s.Subscriptions).SingleOrDefault(s => s.Id == id);
+
+            if(subscriber == null)
+                return NotFound();
+
+            if(subscriber.IsBlackListed) 
+                return BadRequest();
+
+            var lastSubscription = subscriber.Subscriptions.Last();
+
+            var startDate = lastSubscription.EndDate < DateTime.Today ? DateTime.Today :
+                lastSubscription.EndDate.AddDays(1);
+
+            var subscribtion = new Subscription
+            {
+                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
+                CreatedOn = DateTime.Now,
+                StartDate = startDate,
+                EndDate= startDate.AddYears(1)
+            };
+
+            subscriber.Subscriptions.Add(subscribtion);
+            _context.SaveChanges();
+
+            var viewModel = _mapper.Map<SubscriptionViewModel>(subscribtion);
+            return PartialView("_SubscriptionRow", viewModel);
+
         }
     }
 }

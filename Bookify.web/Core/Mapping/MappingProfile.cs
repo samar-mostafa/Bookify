@@ -47,6 +47,9 @@ namespace Bookify.web.Core.Mapping
                  ForMember(dest=>dest.FullName,op=>op.MapFrom(src=>$"{src.FirstName}{src.LastName}"))
                 .ForMember(dest=>dest.Area ,op=>op.MapFrom(src=>src.Area!.Name))
                 .ForMember(dest => dest.Governorate, op => op.MapFrom(src => src.Governorate!.Name));
+
+
+            CreateMap<Subscription, SubscriptionViewModel>();
             //Governorates and Areas
             CreateMap<Area, SelectListItem>().
                 ForMember(dest => dest.Text, op => op.MapFrom(src => src.Name))

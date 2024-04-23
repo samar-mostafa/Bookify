@@ -129,13 +129,15 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
 
-                var body = _emailBodyBuilder.GetEmailBuilder(
-               "https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg",
-                       $"Hey {user.FullName},",
-                       "please confirm your email",                    
-                       "Confirm Email",
-                       $"{HtmlEncoder.Default.Encode(callbackUrl!)}"
-               );
+                var placeholders = new Dictionary<string, string>()
+                {
+                    { "imageUrl", "https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg" },
+                    { "header", $"Hey {user.FullName}," },
+                    { "linkTitle", "please confirm your email" },
+                    { "body", "Confirm Email" },
+                    { "url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}"}
+                };
+                var body = _emailBodyBuilder.GetEmailBuilder(EmailTemplate.Email,placeholders);
 
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
@@ -173,13 +175,17 @@ namespace Bookify.web.Areas.Identity.Pages.Account.Manage
                 pageHandler: null,
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
-            var body = _emailBodyBuilder.GetEmailBuilder(
-                "https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg",
-                        $"Hey {user.FullName},",
-                        "please confirm your email",                       
-                        "Confirm Email",
-                         $"{HtmlEncoder.Default.Encode(callbackUrl!)}"
-                );
+
+            var placeholders = new Dictionary<string, string>()
+                {
+                    { "imageUrl", "https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg" },
+                    { "header", $"Hey {user.FullName}," },
+                    { "linkTitle", "please confirm your email" },
+                    { "body", "Confirm Email" },
+                    { "url", $"{HtmlEncoder.Default.Encode(callbackUrl!)}"}
+                };
+            var body = _emailBodyBuilder.GetEmailBuilder(EmailTemplate.Email, placeholders);
+           
             await _emailSender.SendEmailAsync(
                 email,
                 "Confirm your email",

@@ -87,8 +87,16 @@ namespace Bookify.web.Areas.Identity.Pages.Account
                 values: new { userId = userId, code = code },
                 protocol: Request.Scheme);
 
-            var body = _emailBodyBuilder.GetEmailBuilder("https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg",
-                $"Hey {user.FullName} ,thanks for signing up", "Active Account!", "Please confirm your email", HtmlEncoder.Default.Encode(callbackUrl!));
+            var placeholders = new Dictionary<string, string>()
+                {
+                    { "imageUrl", "https://res.cloudinary.com/devcreed/image/upload/v1668732314/icon-positive-vote-1_rdexez.svg" },
+                    { "header", $"Hey {user.FullName}" },
+                    { "linkTitle", "thanks for signing up" },
+                    { "body", "Active Account!" },
+                    { "url", HtmlEncoder.Default.Encode(callbackUrl!)}
+                };
+            var body = _emailBodyBuilder.GetEmailBuilder(EmailTemplate.Email, placeholders);
+          
             await _emailSender.SendEmailAsync(
                 Input.Username,
                 "Confirm your email",

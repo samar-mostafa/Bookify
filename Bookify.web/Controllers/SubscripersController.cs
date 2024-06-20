@@ -23,7 +23,8 @@ namespace Bookify.web.Controllers
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IEmailBodyBuilder _emailBodyBuilder;
         private readonly IEmailSender _emailSender;
-        public SubscripersController(ApplicationDbContext context, IMapper mapper, IImageService imageService, IDataProtectionProvider dataProtector, IWhatsAppClient whatsAppClient, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder, IEmailSender emailSender)
+        public SubscripersController(ApplicationDbContext context, IMapper mapper, 
+            IImageService imageService, IDataProtectionProvider dataProtector, IWhatsAppClient whatsAppClient, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder, IEmailSender emailSender)
         {
             _context = context;
             _mapper = mapper;
@@ -181,8 +182,13 @@ namespace Bookify.web.Controllers
         public IActionResult Details(string id)
         {
             var subscriberId =int.Parse(_dataProtector.Unprotect(id));
-            var subscriber = _context.Subscripers.Include(s=>s.Area).Include(s=>s.Subscriptions)
-                .Include(s=>s.Governorate).Where(s=>s.Id== subscriberId). SingleOrDefault();
+            var subscriber = _context.Subscripers
+                .Include(s=>s.Area)
+                .Include(s=>s.Subscriptions)
+                .Include(s=>s.Governorate)
+                .Include(s=>s.Rentals)
+                .ThenInclude(s=>s.RentalCopies)
+                .Where(s=>s.Id== subscriberId). SingleOrDefault();
 
             if(subscriber == null)
                 return NotFound();

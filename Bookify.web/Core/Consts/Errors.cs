@@ -22,6 +22,14 @@
         public const string InvalidMobileNumber = "Invalid mobile number";
         public const string InvalidNationalId = "Invalid national id";
         public const string EmptyImage = "Please select an image";
+        public const string InvalidSerialNumber = "Invalid serial number";
+        public const string NotAvailableRental = "This book/copy not available for rental!";
+        public const string BlackListedSubscriber = "This Subscriber is blacklisted";
+        public const string InActiveSubscriber = "This Subscriber is inactive";
+        public const string MaxCopiesReached = "This Subscriber has reached the max number for rentals";
+        public const string CopyIsInRental = "This copy is in rental";
+
+        
 
     }
 }

@@ -30,6 +30,7 @@
                             ActiveStatusIcon.removeClass('d-none');
                             ActiveStatusIcon.siblings('svg').remove()
                             ActiveStatusIcon.parents('.card').removeClass('bg-warning').addClass('bg-success');
+                            $('#rentalBtn').removeClass('d-none');
                             $('#CardStatus').text('Active Subscriber');
                             $('#StatusBadge').removeClass('badge-light-warning').addClass('badge-light-success').text('Active Subscriber')
                             showSuccessMessage();

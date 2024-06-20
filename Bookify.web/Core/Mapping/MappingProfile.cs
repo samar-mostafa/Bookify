@@ -30,7 +30,9 @@ namespace Bookify.web.Core.Mapping
                 (src => src.categories.Select(c => c.Category!.Name)));
 
             CreateMap<BookCopyViewModel, BookCopy>().ReverseMap().
-                ForMember(dest => dest.BookTitle, op => op.MapFrom(src => src.Book.Title));
+                ForMember(dest => dest.BookTitle, op => op.MapFrom(src => src.Book!.Title))
+                .ForMember(dest => dest.BookId, op => op.MapFrom(src => src.Book!.Id))
+                .ForMember(dest => dest.BookThumnailUrl, op => op.MapFrom(src => src.Book!.ImageThumbnailUrl));
 
             //users
             CreateMap<ApplicationUser, UserViewModel>();
@@ -59,7 +61,12 @@ namespace Bookify.web.Core.Mapping
                ForMember(dest => dest.Text, op => op.MapFrom(src => src.Name))
                .ForMember(dest => dest.Value, op => op.MapFrom(src => src.Id));
 
-        }
+			//Rental
+			CreateMap<Rental, RentalViewModel>();
+			CreateMap<RentalCopy, RentalCopyViewModel>();
+
+
+		}
 
 
     }

@@ -7,3 +7,4 @@ global using Bookify.web.Filters;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
+global using Bookify.web.Core.Enums;

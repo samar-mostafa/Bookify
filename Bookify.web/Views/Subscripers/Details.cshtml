@@ -137,7 +137,7 @@
                             <div class="card-header border-0">
                                 <!--begin::Card title-->
                                 <div class="card-title">
-                                    <h2 class="fw-bold">Reward Points</h2>
+                                    <h2 class="fw-bold"># Of Rentals</h2>
                                 </div>
                                 <!--end::Card title-->
                             </div>
@@ -154,11 +154,11 @@
                                         </span>
                                         <!--end::Svg Icon-->
                                         <div class="ms-2">
-                                            4,571
-                                            <span class="text-muted fs-4 fw-semibold">Points earned</span>
+                                           @Model.Rentals.Sum(r=>r.TotalNumberOfCopy)
+                    
                                         </div>
                                     </div>
-                                    <div class="fs-7 fw-normal text-muted">Earn reward points with every purchase.</div>
+                                    <div class="fs-7 fw-normal text-muted">Total Number Of Copies.</div>
                                 </div>
                             </div>
                             <!--end::Card body-->
@@ -262,17 +262,33 @@
                 <!--begin::Card-->
                 <div class="card pt-4 mb-6 mb-xl-9">
                     <!--begin::Card header-->
-                    <div class="card-header border-0">
-                        <!--begin::Card title-->
-                        <div class="card-title">
-                            <h2>Rentals</h2>
-                        </div>
-                        <!--end::Card title-->
+                    <div class="card-header border-0 pt-5">
+                        <h3 class="card-title align-items-start flex-column">
+                            <span class="card-label fw-bold fs-3 mb-1">Rentals</span>
+                        </h3>
+                        @if (!Model.IsBlackListed )
+                        {
+                            <div class="card-toolbar">
+                                <a id="rentalBtn" asp-controller="Rentals" asp-action="Create" asp-route-sKey="@Model.Key" class="btn btn-sm btn-light-primary @(lastSubscription.EndDate < DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration)? "d-none":string.Empty)">
+                                    <!--begin::Svg Icon | path: icons/duotune/arrows/arr075.svg-->
+                                    <span class="svg-icon svg-icon-2">
+                                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <rect opacity="0.3" x="2" y="2" width="20" height="20" rx="10" fill="currentColor" />
+                                            <rect x="10.8891" y="17.8033" width="12" height="2" rx="1" transform="rotate(-90 10.8891 17.8033)" fill="currentColor" />
+                                            <rect x="6.01041" y="10.9247" width="12" height="2" rx="1" fill="currentColor" />
+                                        </svg>
+                                    </span>
+                                    <!--end::Svg Icon-->
+                                   Add Rental
+                                </a>
+                            </div>
+                        }
                     </div>
+                    
                     <!--end::Card header-->
                     <!--begin::Card body-->
                     <div class="card-body pt-0 pb-5">
-                        Rentals will be shown here
+                     <partial name="_Rentals" model="@Model.Rentals" />
                     </div>
                     <!--end::Card body-->
                 </div>

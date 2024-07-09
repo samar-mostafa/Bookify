@@ -1,4 +1,5 @@
 ﻿using Bookify.web.Core.Services;
+using Hangfire;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -151,9 +152,9 @@ namespace Bookify.web.Controllers
                     { "body", "thanks for joining Bookify" }
                 };
             var body = _emailBodyBuilder.GetEmailBuilder(EmailTemplate.Notification, placeholders);
-            await _emailSender.SendEmailAsync( model.Email,
-               "welcome to bookify",
-              body);
+
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(model.Email,"welcome to bookify", body));
+           
 
             //send welcome message using whatsApp
             if (model.HasWhatsApp)
@@ -171,8 +172,10 @@ namespace Bookify.web.Controllers
                 }
             };
                 var mobilNumber = _webHostEnvironment.IsDevelopment() ? "01033500507" : model.MobileNumber;
-                var result = await _whatsAppClient.SendMessage($"2{mobilNumber}", 
-                    WhatsAppLanguageCode.English_US, WhatsAppTemplate.WelcomeMessage, components);
+                BackgroundJob.Enqueue(() => _whatsAppClient.SendMessage($"2{mobilNumber}",
+                    WhatsAppLanguageCode.English_US, WhatsAppTemplate.WelcomeMessage, components));
+                //var result = await _whatsAppClient.SendMessage($"2{mobilNumber}", 
+                //    WhatsAppLanguageCode.English_US, WhatsAppTemplate.WelcomeMessage, components);
             }
             var subscriberId =_dataProtector.Protect(entity.Id.ToString());
             return RedirectToAction(nameof(Details) , new {id=subscriberId});
@@ -315,5 +318,9 @@ namespace Bookify.web.Controllers
             return PartialView("_SubscriptionRow", viewModel);
 
         }
+
+       
+
+      
     }
 }

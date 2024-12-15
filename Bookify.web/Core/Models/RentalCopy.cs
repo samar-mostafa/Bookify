@@ -10,7 +10,7 @@
 		public BookCopy? BookCopy { get; set; }
 
 		public DateTime RentalDate { get; set; } = DateTime.Today;
-		public DateTime EndDate { get; set; } = DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration);
+		//public DateTime EndDate { get; set; } = DateTime.Today.AddDays((int)RentalConfigurations.RentalDuration);
 		public DateTime? ReturnDate { get; set; }
 
 		public DateTime? ExtendDate { get; set; }

@@ -9,4 +9,5 @@ global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations;
 global using WhatsAppCloudApi;
 global using WhatsAppCloudApi.Services;
+global using Bookify.web.Core.Enums;
 

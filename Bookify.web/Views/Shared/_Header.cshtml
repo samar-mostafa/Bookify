@@ -1,5 +1,5 @@
 ﻿
-
+@inject SignInManager<ApplicationUser> SignInManager
 @using System.Security.Claims
 @inject IWebHostEnvironment webHostEnvironment
 @{
@@ -25,9 +25,12 @@
 			</div>
 			<!--end::Aside  toggle-->
 			<!--begin::Logo-->
-			<a asp-controller="Home" asp-action="Index">
+			
+				<a   asp-controller ="Home" asp-action = "Index" >
 				<img alt="Logo" src="~/assets/images/logo.png" class="h-40px h-lg-50px" />
-			</a>
+				</a>
+		
+			
 			<!--end::Logo-->
 		
 		</div>

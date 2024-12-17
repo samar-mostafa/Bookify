@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 using WhatsAppCloudApi.Extensions;
+using HashidsNet;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
 builder.Services.AddHangfireServer();
 builder.Services.AddDataProtection().SetApplicationName(nameof(Bookify));
+builder.Services.AddSingleton<IHashids>(_ => new Hashids("f1nd1ngn3m0", minHashLength: 11));
 builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>().
     AddDefaultUI().

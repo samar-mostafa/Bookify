@@ -14,6 +14,7 @@ using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 using WhatsAppCloudApi.Extensions;
 using HashidsNet;
+using ViewToHTML.Extensions;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -55,6 +56,7 @@ builder.Services.AddTransient<IImageService, ImageService>();
 builder.Services.AddTransient<IEmailSender,EmailSender>();
 builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
 builder.Services.AddWhatsAppApiClient(builder.Configuration);
+builder.Services.AddViewToHTML();
 builder.Services.Configure<AuthorizationOptions>(options =>
 options.AddPolicy("AdminsOnly", policy =>
 {

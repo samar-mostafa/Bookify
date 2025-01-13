@@ -118,6 +118,20 @@ var KTDatatables = function () {
                     title: documentTitle,
                     exportOptions: {
                         columns: exportedCloumns
+                    },
+                    customize: function (doc) {
+                       
+                        pdfMake.fonts = {
+                   
+                            arial: {
+                                normal:'arial',
+                                bold: 'arial',
+                                italics: 'arial',
+                                bolditalics: 'arial'
+                            }
+                        }
+                        doc.defaultStyle.font = 'arial';
+                       
                     }
                 }
             ]
@@ -164,7 +178,7 @@ var KTDatatables = function () {
 }();
 $(document).ready(function () {
     //disable form
-    $('form').not('#signout').on('submit', function () {
+    $('form').not('#signout').not('.js-excluded-validation').on('submit', function () {
        
         if ($('.js_tiny').length > 0) {
             $('.js_tiny').each(function () {

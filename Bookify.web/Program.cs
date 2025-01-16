@@ -15,6 +15,10 @@ using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 using WhatsAppCloudApi.Extensions;
 using HashidsNet;
 using ViewToHTML.Extensions;
+using Serilog;
+using DocumentFormat.OpenXml.InkML;
+using Serilog.Context;
+using System.Security.Claims;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -63,12 +67,17 @@ options.AddPolicy("AdminsOnly", policy =>
     policy.RequireAuthenticatedUser();
     policy.RequireRole(AppRoles.Admin);
 }));
+
+//add serilog
+Log.Logger =new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+builder.Host.UseSerilog();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
+
 }
 else
 {
@@ -77,6 +86,7 @@ else
     app.UseHsts();
 }
 
+app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -113,6 +123,15 @@ var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
 var hangfireTasks = new HangfireTasks(applicationDbContext,whatsAppClient,webHostEnvironment,emailBodyBuilder,emailSender);
 RecurringJob.AddOrUpdate(() => hangfireTasks.PrepareExpirationAlert(), "0 14 * * *");
 
+
+app.Use(async (context, next) =>
+{
+    LogContext.PushProperty("UserId",context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+    LogContext.PushProperty("UserName", context.User.FindFirst(ClaimTypes.Name)?.Value);
+    await next();
+});
+
+app.UseSerilogRequestLogging();
 
 app.MapControllerRoute(
     name: "default",

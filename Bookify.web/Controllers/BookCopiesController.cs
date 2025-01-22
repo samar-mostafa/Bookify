@@ -29,7 +29,7 @@ namespace Bookify.web.Controllers
             return PartialView("Form",viewModel);
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult Create(BookCopyFormViewModel mdl)
         {
             if (!ModelState.IsValid)
@@ -71,7 +71,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult Edit(BookCopyFormViewModel mdl)
         {
             if (!ModelState.IsValid)
@@ -93,7 +93,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult ToggleStatus(int id)
         {
             var entity = db.BookCopies.Find(id);

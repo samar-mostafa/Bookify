@@ -79,7 +79,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult ToggleStatus(int id)
         {
             var cat = db.Authors.Find(id);

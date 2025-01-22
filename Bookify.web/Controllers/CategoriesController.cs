@@ -56,7 +56,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult Edit(CreateFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -79,7 +79,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult ToggleStatus(int id)
         {
             var cat = dbContext.Categories.Find(id);

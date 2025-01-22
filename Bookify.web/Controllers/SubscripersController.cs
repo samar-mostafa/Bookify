@@ -61,7 +61,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Edit(SubscriperFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -109,7 +109,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Create(SubscriperFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -216,7 +216,7 @@ namespace Bookify.web.Controllers
 		}
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult Search(SearchFormViewModel model)
         {
             if (!ModelState.IsValid)
@@ -283,7 +283,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult RenewSubscription(string sKey)
         {
             var id = 0;

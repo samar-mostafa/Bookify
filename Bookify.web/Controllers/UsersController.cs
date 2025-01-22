@@ -165,7 +165,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> ToggleStatus(string Id)
         {
             var user = await _userManger.FindByIdAsync(Id);
@@ -183,7 +183,7 @@ namespace Bookify.web.Controllers
 
         }
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> Unlock(string Id)
         {
             var user = await _userManger.FindByIdAsync(Id);

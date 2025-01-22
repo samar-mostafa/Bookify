@@ -45,7 +45,6 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Create(RentalFormViewModel model)
         {
             if(!ModelState.IsValid)
@@ -107,7 +106,7 @@ namespace Bookify.web.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+
         public IActionResult GetCopyDetails(SearchFormViewModel model)
         {
             if (!ModelState.IsValid)

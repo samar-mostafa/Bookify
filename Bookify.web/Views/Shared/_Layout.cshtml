@@ -35,6 +35,16 @@
     <!--end::Theme mode setup on page load-->
     <!--begin::Main-->
     <!--begin::Root-->
+
+    <!--begin:: no script-->
+    <noscript>
+        <div class="position-fixed h-100 w-100 bg-white text-center pt-20" style="z-index: 30000000000;">
+            <h1 class="text-danger">Javascript is disabled</h1>
+            <p class="pt-3 text-muted">Please enable javascript and refresh the page</p>
+        </div>
+    </noscript>
+    <!--end:: no script-->
+
     <!--begin::Page loading(append to body)-->
     <div class="page-loader flex-column bg-dark bg-opacity-25">
         <span class="spinner-border text-primary" role="status"></span>

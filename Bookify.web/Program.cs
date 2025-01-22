@@ -61,6 +61,9 @@ builder.Services.AddTransient<IEmailSender,EmailSender>();
 builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
 builder.Services.AddWhatsAppApiClient(builder.Configuration);
 builder.Services.AddViewToHTML();
+builder.Services.AddMvc(
+    options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute())
+    );
 builder.Services.Configure<AuthorizationOptions>(options =>
 options.AddPolicy("AdminsOnly", policy =>
 {
@@ -89,6 +92,17 @@ else
 app.UseStatusCodePagesWithReExecute("/Home/Error", "?statusCode={0}");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
+app.UseCookiePolicy(new CookiePolicyOptions
+{
+    Secure = CookieSecurePolicy.Always
+});
+
+app.Use(async (context , next) =>
+{
+    context.Response.Headers.Add("X-Frame-Options", "Deny");
+    await next();
+});
 
 app.UseRouting();
 
